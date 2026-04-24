@@ -4,2128 +4,1140 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Next Audio — Prospecting Engine</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@600;700;800&family=DM+Sans:wght@400;500&display=swap" rel="stylesheet">
 <style>
 :root {
-  --bg: #0a0a0b;
-  --bg2: #111113;
-  --bg3: #18181c;
-  --bg4: #1f1f25;
-  --border: rgba(255,255,255,0.07);
-  --border2: rgba(255,255,255,0.12);
-  --text: #f0eff2;
-  --text2: #9b99a8;
-  --text3: #5c5a6b;
-  --accent: #ff4d1c;
-  --accent2: #ff7043;
-  --accent-glow: rgba(255,77,28,0.15);
-  --green: #22c55e;
-  --green-bg: rgba(34,197,94,0.1);
-  --blue: #3b82f6;
-  --blue-bg: rgba(59,130,246,0.1);
-  --amber: #f59e0b;
-  --amber-bg: rgba(245,158,11,0.1);
-  --red: #ef4444;
-  --red-bg: rgba(239,68,68,0.1);
-  --purple: #a855f7;
-  --purple-bg: rgba(168,85,247,0.1);
-  --radius: 12px;
-  --radius-sm: 8px;
+  --bg:#0a0a0b; --bg2:#111113; --bg3:#18181c; --bg4:#222228;
+  --border:rgba(255,255,255,0.07); --border2:rgba(255,255,255,0.13);
+  --text:#f0eff2; --text2:#9b99a8; --text3:#5c5a6b;
+  --accent:#ff4d1c; --accent2:#ff7043; --glow:rgba(255,77,28,0.15);
+  --green:#22c55e; --gbg:rgba(34,197,94,0.1); --gbd:rgba(34,197,94,0.2);
+  --blue:#3b82f6; --bbg:rgba(59,130,246,0.1); --bbd:rgba(59,130,246,0.2);
+  --amber:#f59e0b; --abg:rgba(245,158,11,0.1); --abd:rgba(245,158,11,0.2);
+  --red:#ef4444; --rbg:rgba(239,68,68,0.1); --rbd:rgba(239,68,68,0.2);
+  --r:12px; --rs:8px;
 }
-
-* { box-sizing: border-box; margin: 0; padding: 0; }
-
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; }
 body {
-  background: var(--bg);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 14px;
-  line-height: 1.6;
-  min-height: 100vh;
+  background: var(--bg); color: var(--text);
+  font-family: 'DM Sans', sans-serif; font-size: 14px; line-height: 1.6;
   overflow-x: hidden;
 }
-
-/* ── NOISE TEXTURE ── */
-body::before {
-  content: '';
-  position: fixed;
-  inset: 0;
-  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
-  pointer-events: none;
-  z-index: 0;
-}
-
-/* ── GRID LINES ── */
 body::after {
-  content: '';
-  position: fixed;
-  inset: 0;
+  content: ''; position: fixed; inset: 0; pointer-events: none; z-index: 0;
   background-image:
-    linear-gradient(rgba(255,255,255,0.015) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255,255,255,0.015) 1px, transparent 1px);
-  background-size: 40px 40px;
-  pointer-events: none;
-  z-index: 0;
+    linear-gradient(rgba(255,255,255,0.016) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.016) 1px, transparent 1px);
+  background-size: 44px 44px;
 }
-
 .app { position: relative; z-index: 1; display: flex; min-height: 100vh; }
 
-/* ── SIDEBAR ── */
+/* SIDEBAR */
 .sidebar {
-  width: 240px;
-  flex-shrink: 0;
-  background: var(--bg2);
+  width: 230px; flex-shrink: 0; background: var(--bg2);
   border-right: 1px solid var(--border);
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 0; left: 0; bottom: 0;
-  z-index: 100;
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; bottom: 0; z-index: 100;
 }
-
-.sidebar-logo {
-  padding: 24px 20px 20px;
-  border-bottom: 1px solid var(--border);
-}
-
-.logo-mark {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  margin-bottom: 4px;
-}
-
+.logo-wrap { padding: 22px 18px 18px; border-bottom: 1px solid var(--border); }
+.logo-row { display: flex; align-items: center; gap: 10px; margin-bottom: 3px; }
 .logo-icon {
-  width: 32px; height: 32px;
-  background: var(--accent);
-  border-radius: 8px;
+  width: 30px; height: 30px; border-radius: 8px; background: var(--accent);
   display: flex; align-items: center; justify-content: center;
-  font-family: 'Syne', sans-serif;
-  font-weight: 800;
-  font-size: 14px;
-  color: white;
-  box-shadow: 0 0 20px var(--accent-glow);
+  font-family: 'Syne', sans-serif; font-weight: 800; font-size: 13px; color: #fff;
+  flex-shrink: 0; box-shadow: 0 0 16px var(--glow);
 }
-
-.logo-text {
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 15px;
-  color: var(--text);
-}
-
-.logo-sub {
-  font-size: 11px;
-  color: var(--text3);
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  padding-left: 42px;
-}
-
-.sidebar-nav {
-  flex: 1;
-  padding: 16px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-
-.nav-label {
-  font-size: 10px;
-  font-weight: 500;
-  color: var(--text3);
-  letter-spacing: 0.1em;
-  text-transform: uppercase;
-  padding: 8px 8px 4px;
-  margin-top: 8px;
-}
-
+.logo-name { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 14px; }
+.logo-sub { font-size: 10px; color: var(--text3); letter-spacing: .09em; text-transform: uppercase; padding-left: 40px; }
+.nav { flex: 1; padding: 14px 10px; display: flex; flex-direction: column; gap: 2px; overflow-y: auto; }
+.nav-lbl { font-size: 10px; font-weight: 500; color: var(--text3); letter-spacing: .1em; text-transform: uppercase; padding: 10px 8px 4px; margin-top: 4px; }
 .nav-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 10px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  color: var(--text2);
-  font-size: 13px;
-  font-weight: 400;
-  transition: all 0.15s;
-  border: 1px solid transparent;
+  display: flex; align-items: center; gap: 9px; padding: 8px 10px;
+  border-radius: var(--rs); cursor: pointer; color: var(--text2);
+  font-size: 13px; transition: all .15s; border: 1px solid transparent;
+  user-select: none;
 }
-
 .nav-item:hover { background: var(--bg3); color: var(--text); }
-.nav-item.active {
-  background: var(--accent-glow);
-  color: var(--text);
-  border-color: rgba(255,77,28,0.2);
-}
-
-.nav-icon { width: 16px; height: 16px; opacity: 0.7; flex-shrink: 0; }
+.nav-item.active { background: var(--glow); color: var(--text); border-color: rgba(255,77,28,.22); }
+.nav-icon { width: 15px; height: 15px; flex-shrink: 0; opacity: .65; }
 .nav-item.active .nav-icon { opacity: 1; }
-
-.nav-badge {
-  margin-left: auto;
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 7px;
-  border-radius: 999px;
-  background: var(--accent-glow);
-  color: var(--accent2);
-}
-
-.sidebar-footer {
-  padding: 16px;
-  border-top: 1px solid var(--border);
-}
-
-.user-card {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 8px;
-  border-radius: var(--radius-sm);
-  background: var(--bg3);
-}
-
-.user-av {
-  width: 30px; height: 30px;
-  border-radius: 50%;
-  background: linear-gradient(135deg, var(--accent), #ff8a65);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 11px; font-weight: 700; color: white; flex-shrink: 0;
-}
-
-.user-name { font-size: 12px; font-weight: 500; color: var(--text); }
+.nav-badge { margin-left: auto; font-size: 10px; font-weight: 600; padding: 1px 7px; border-radius: 999px; background: var(--glow); color: var(--accent2); }
+.sidebar-foot { padding: 14px; border-top: 1px solid var(--border); }
+.user-row { display: flex; align-items: center; gap: 9px; padding: 8px; border-radius: var(--rs); background: var(--bg3); }
+.user-av { width: 28px; height: 28px; border-radius: 50%; background: linear-gradient(135deg, var(--accent), #ff8a65); display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; color: #fff; flex-shrink: 0; }
+.user-name { font-size: 12px; font-weight: 500; }
 .user-role { font-size: 11px; color: var(--text3); }
 
-/* ── MAIN ── */
-.main {
-  margin-left: 240px;
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  min-height: 100vh;
-}
-
-/* ── TOPBAR ── */
+/* MAIN */
+.main { margin-left: 230px; flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
 .topbar {
-  height: 60px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  padding: 0 32px;
-  gap: 16px;
-  background: rgba(10,10,11,0.8);
-  backdrop-filter: blur(12px);
-  position: sticky;
-  top: 0;
-  z-index: 50;
+  height: 56px; border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; padding: 0 28px; gap: 14px;
+  background: rgba(10,10,11,.9); backdrop-filter: blur(16px);
+  position: sticky; top: 0; z-index: 50;
 }
+.topbar-title { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; flex: 1; }
+.live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 7px var(--green); animation: pulse 2.2s infinite; }
+@keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.3} }
+.topbar-label { font-size: 12px; color: var(--text2); }
+.model-pill { font-size: 11px; color: var(--text3); background: var(--bg3); border: 1px solid var(--border); padding: 3px 10px; border-radius: 999px; }
+.content { flex: 1; padding: 28px; }
 
-.topbar-title {
-  font-family: 'Syne', sans-serif;
-  font-weight: 600;
-  font-size: 16px;
-  flex: 1;
-}
-
-.status-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-  background: var(--green);
-  box-shadow: 0 0 8px var(--green);
-  animation: pulse 2s infinite;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.4; }
-}
-
-.status-text { font-size: 12px; color: var(--text2); }
-
-.topbar-model {
-  font-size: 11px;
-  color: var(--text3);
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  padding: 4px 10px;
-  border-radius: 999px;
-}
-
-/* ── CONTENT AREA ── */
-.content { flex: 1; padding: 32px; }
-
-/* ── TABS ── */
-.tabs {
-  display: flex;
-  gap: 2px;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 4px;
-  margin-bottom: 28px;
-  width: fit-content;
-}
-
-.tab {
-  padding: 8px 20px;
-  border-radius: var(--radius-sm);
-  cursor: pointer;
-  font-size: 13px;
-  font-weight: 500;
-  color: var(--text2);
-  transition: all 0.15s;
-}
-
+/* TABS */
+.tabs { display: flex; gap: 2px; background: var(--bg3); border: 1px solid var(--border); border-radius: var(--r); padding: 4px; width: fit-content; margin-bottom: 24px; }
+.tab { padding: 7px 18px; border-radius: var(--rs); cursor: pointer; font-size: 13px; font-weight: 500; color: var(--text2); transition: all .15s; user-select: none; }
 .tab:hover { color: var(--text); background: var(--bg4); }
-.tab.active { background: var(--bg); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,0.3); }
+.tab.active { background: var(--bg); color: var(--text); box-shadow: 0 1px 4px rgba(0,0,0,.4); }
 
-/* ── TAB PANELS ── */
+/* PANELS */
 .panel { display: none; }
 .panel.active { display: block; }
 
-/* ── FIND LEADS PANEL ── */
-.find-grid {
-  display: grid;
-  grid-template-columns: 340px 1fr;
-  gap: 20px;
-  align-items: start;
+/* KEY BANNER */
+.key-banner {
+  display: flex; align-items: flex-start; gap: 16px;
+  background: rgba(255,77,28,.08); border: 1px solid rgba(255,77,28,.25);
+  border-radius: var(--r); padding: 18px 20px; margin-bottom: 22px;
 }
-
-.filters-col { display: flex; flex-direction: column; gap: 16px; }
-
-.filter-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
+.key-banner-body { flex: 1; }
+.key-banner-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 3px; }
+.key-banner-sub { font-size: 12px; color: var(--text3); margin-bottom: 10px; }
+.key-row { display: flex; gap: 8px; }
+.key-input {
+  flex: 1; background: var(--bg3); border: 1px solid var(--border);
+  border-radius: var(--rs); color: var(--text); font-family: monospace;
+  font-size: 12px; padding: 8px 12px; outline: none;
 }
+.key-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow); }
+.key-save { padding: 8px 18px; background: var(--accent); color: #fff; border: none; border-radius: var(--rs); font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; cursor: pointer; white-space: nowrap; }
+.key-save:hover { background: var(--accent2); }
 
-.filter-header {
-  padding: 14px 16px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  gap: 8px;
+/* FIND PANEL */
+.find-grid { display: grid; grid-template-columns: 310px 1fr; gap: 18px; align-items: start; }
+.filters-col { display: flex; flex-direction: column; gap: 14px; }
+.fcard { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+.fcard-head { padding: 12px 15px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+.fcard-ico { width: 20px; height: 20px; background: var(--glow); border-radius: 6px; display: flex; align-items: center; justify-content: center; font-size: 11px; flex-shrink: 0; }
+.fcard-title { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; letter-spacing: .04em; }
+.fcard-body { padding: 14px; display: flex; flex-direction: column; gap: 12px; }
+.fg { display: flex; flex-direction: column; gap: 5px; }
+.flbl { font-size: 10px; font-weight: 500; color: var(--text3); letter-spacing: .07em; text-transform: uppercase; }
+.fsel, .finput {
+  background: var(--bg3); border: 1px solid var(--border); border-radius: var(--rs);
+  color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 13px;
+  padding: 8px 11px; width: 100%; outline: none; -webkit-appearance: none;
 }
-
-.filter-header-icon {
-  width: 20px; height: 20px;
-  background: var(--accent-glow);
-  border-radius: 6px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px;
+.fsel:focus, .finput:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--glow); }
+.fsel option { background: var(--bg3); }
+.chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip { padding: 4px 10px; border-radius: 999px; border: 1px solid var(--border); font-size: 11px; color: var(--text2); cursor: pointer; transition: all .15s; user-select: none; }
+.chip:hover { border-color: var(--border2); color: var(--text); }
+.chip.on { background: var(--glow); border-color: rgba(255,77,28,.3); color: var(--accent2); }
+.qty-row { display: flex; align-items: center; gap: 12px; }
+.qty-sl { flex: 1; -webkit-appearance: none; height: 3px; background: var(--bg4); border-radius: 2px; outline: none; }
+.qty-sl::-webkit-slider-thumb { -webkit-appearance: none; width: 16px; height: 16px; border-radius: 50%; background: var(--accent); cursor: pointer; }
+.qty-val { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 16px; color: var(--accent2); width: 22px; text-align: center; }
+.gen-btn {
+  width: 100%; padding: 11px; background: var(--accent); color: #fff;
+  border: none; border-radius: var(--rs);
+  font-family: 'Syne', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: .04em;
+  cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px;
+  box-shadow: 0 4px 16px rgba(255,77,28,.3); transition: all .2s;
 }
+.gen-btn:hover { background: var(--accent2); transform: translateY(-1px); }
+.gen-btn:active { transform: translateY(0); }
+.gen-btn:disabled { opacity: .45; cursor: not-allowed; transform: none; }
+.spin { width: 14px; height: 14px; border: 2px solid rgba(255,255,255,.3); border-top-color: #fff; border-radius: 50%; animation: rot .7s linear infinite; display: none; flex-shrink: 0; }
+@keyframes rot { to { transform: rotate(360deg); } }
 
-.filter-header-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 12px;
-  font-weight: 600;
-  color: var(--text);
-  letter-spacing: 0.04em;
-}
-
-.filter-body { padding: 16px; display: flex; flex-direction: column; gap: 14px; }
-
-.form-group { display: flex; flex-direction: column; gap: 6px; }
-
-.form-label {
-  font-size: 11px;
-  font-weight: 500;
-  color: var(--text3);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.form-select, .form-input {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  font-family: 'DM Sans', sans-serif;
-  font-size: 13px;
-  padding: 9px 12px;
-  width: 100%;
-  outline: none;
-  transition: border-color 0.15s;
-  -webkit-appearance: none;
-}
-
-.form-select:focus, .form-input:focus {
-  border-color: var(--accent);
-  box-shadow: 0 0 0 3px var(--accent-glow);
-}
-
-.form-select option { background: var(--bg3); }
-
-.signal-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-}
-
-.signal-chip {
-  padding: 5px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  font-size: 11px;
-  color: var(--text2);
-  cursor: pointer;
-  transition: all 0.15s;
-  user-select: none;
-}
-
-.signal-chip:hover { border-color: var(--border2); color: var(--text); }
-.signal-chip.selected {
-  background: var(--accent-glow);
-  border-color: rgba(255,77,28,0.3);
-  color: var(--accent2);
-}
-
-.qty-row {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.qty-slider {
-  flex: 1;
-  -webkit-appearance: none;
-  height: 3px;
-  background: var(--bg4);
-  border-radius: 2px;
-  outline: none;
-}
-
-.qty-slider::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  width: 16px; height: 16px;
-  border-radius: 50%;
-  background: var(--accent);
-  cursor: pointer;
-  box-shadow: 0 0 8px var(--accent-glow);
-}
-
-.qty-val {
-  font-family: 'Syne', sans-serif;
-  font-weight: 700;
-  font-size: 16px;
-  color: var(--accent2);
-  width: 24px;
-  text-align: center;
-}
-
-.generate-btn {
-  width: 100%;
-  padding: 12px;
-  background: var(--accent);
-  color: white;
-  border: none;
-  border-radius: var(--radius-sm);
-  font-family: 'Syne', sans-serif;
-  font-weight: 600;
-  font-size: 13px;
-  cursor: pointer;
-  transition: all 0.2s;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  box-shadow: 0 4px 16px rgba(255,77,28,0.3);
-  letter-spacing: 0.04em;
-}
-
-.generate-btn:hover {
-  background: var(--accent2);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(255,77,28,0.4);
-}
-
-.generate-btn:active { transform: translateY(0); }
-.generate-btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; }
-
-/* SPINNER */
-.spinner {
-  width: 14px; height: 14px;
-  border: 2px solid rgba(255,255,255,0.3);
-  border-top-color: white;
-  border-radius: 50%;
-  animation: spin 0.7s linear infinite;
-  display: none;
-}
-
-@keyframes spin { to { transform: rotate(360deg); } }
-
-/* ── RESULTS AREA ── */
-.results-col { display: flex; flex-direction: column; gap: 16px; }
-
-.results-meta {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 10px;
-}
-
-.results-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text2);
-}
-
-.results-badges { display: flex; gap: 6px; flex-wrap: wrap; }
-
-.rbadge {
-  font-size: 10px;
-  font-weight: 500;
-  padding: 3px 10px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-}
-
-.rb-green { background: var(--green-bg); color: var(--green); border-color: rgba(34,197,94,0.2); }
-.rb-amber { background: var(--amber-bg); color: var(--amber); border-color: rgba(245,158,11,0.2); }
-.rb-blue { background: var(--blue-bg); color: var(--blue); border-color: rgba(59,130,246,0.2); }
-.rb-red { background: var(--red-bg); color: var(--red); border-color: rgba(239,68,68,0.2); }
-
-/* STAT ROW */
-.stat-row {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-}
-
-.stat-box {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 14px 16px;
-}
-
-.stat-n {
-  font-family: 'Syne', sans-serif;
-  font-size: 24px;
-  font-weight: 700;
-  color: var(--text);
-  line-height: 1;
-}
-
+/* RESULTS */
+.results-col { display: flex; flex-direction: column; gap: 14px; }
+.res-meta { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.res-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 600; color: var(--text2); }
+.bdgs { display: flex; gap: 5px; flex-wrap: wrap; }
+.bdg { font-size: 10px; font-weight: 500; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--border); }
+.bdg-g { background: var(--gbg); color: var(--green); border-color: var(--gbd); }
+.bdg-a { background: var(--abg); color: var(--amber); border-color: var(--abd); }
+.bdg-b { background: var(--bbg); color: var(--blue); border-color: var(--bbd); }
+.stat-row { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 14px; }
+.stat-box { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--rs); padding: 13px 15px; }
+.stat-n { font-family: 'Syne', sans-serif; font-size: 22px; font-weight: 700; line-height: 1; }
 .stat-l { font-size: 11px; color: var(--text3); margin-top: 4px; }
+.legend-row { display: flex; gap: 18px; flex-wrap: wrap; margin-bottom: 8px; }
+.leg-item { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text3); }
+.leg-dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.tier-legend { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 16px; }
+.tier-li { display: flex; align-items: center; gap: 5px; font-size: 11px; color: var(--text3); }
+.tier-ball { width: 19px; height: 19px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 9px; font-weight: 700; }
+.t1b-s { background: rgba(34,197,94,.15); color: #86efac; }
+.t2b-s { background: rgba(59,130,246,.15); color: #93c5fd; }
+.t3b-s { background: var(--bg4); color: var(--text3); border: 1px solid var(--border); }
 
-/* EMPTY STATE */
+/* EMPTY + LOADING */
 .empty-state {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 60px 40px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 16px;
+  background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r);
+  padding: 56px 36px; text-align: center;
+  display: flex; flex-direction: column; align-items: center; gap: 14px;
 }
+.empty-ico { width: 52px; height: 52px; background: var(--bg3); border-radius: 14px; border: 1px solid var(--border); display: flex; align-items: center; justify-content: center; font-size: 22px; }
+.empty-title { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
+.empty-sub { font-size: 13px; color: var(--text3); max-width: 260px; line-height: 1.6; }
+.loading-wrap { display: none; flex-direction: column; align-items: center; justify-content: center; padding: 70px 36px; gap: 18px; text-align: center; }
+.loading-ring { width: 44px; height: 44px; border: 3px solid var(--bg4); border-top-color: var(--accent); border-radius: 50%; animation: rot .8s linear infinite; }
+.loading-t { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; color: var(--text2); }
+.loading-s { font-size: 12px; color: var(--text3); }
 
-.empty-icon {
-  width: 56px; height: 56px;
-  background: var(--bg3);
-  border-radius: 16px;
-  border: 1px solid var(--border);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 24px;
-}
-
-.empty-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 16px;
-  font-weight: 600;
-  color: var(--text);
-}
-
-.empty-sub { font-size: 13px; color: var(--text3); max-width: 280px; line-height: 1.6; }
-
-/* ── LEAD CARD ── */
-.lead-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  transition: border-color 0.2s;
-}
-
+/* LEAD CARD */
+.lead-card { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; margin-bottom: 16px; transition: border-color .2s; }
 .lead-card:hover { border-color: var(--border2); }
-
-.lead-head {
-  padding: 16px 20px;
-  display: flex;
-  align-items: flex-start;
-  gap: 14px;
-  border-bottom: 1px solid var(--border);
-}
-
-.lead-av {
-  width: 44px; height: 44px;
-  border-radius: 12px;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 12px; font-weight: 700; flex-shrink: 0;
-  font-family: 'Syne', sans-serif;
-}
-
-.av-a { background: linear-gradient(135deg, #1a3a5c, #2563eb); color: #93c5fd; }
-.av-b { background: linear-gradient(135deg, #1a3d1a, #16a34a); color: #86efac; }
-.av-c { background: linear-gradient(135deg, #3d1a1a, #dc2626); color: #fca5a5; }
-.av-d { background: linear-gradient(135deg, #2d1a3d, #9333ea); color: #d8b4fe; }
-.av-e { background: linear-gradient(135deg, #3d2a1a, #d97706); color: #fcd34d; }
-
+.lead-head { padding: 15px 18px; display: flex; align-items: flex-start; gap: 13px; border-bottom: 1px solid var(--border); }
+.lead-av { width: 42px; height: 42px; border-radius: 11px; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 11px; font-weight: 700; font-family: 'Syne', sans-serif; }
+.av-a { background: linear-gradient(135deg,#1a3a5c,#2563eb); color: #93c5fd; }
+.av-b { background: linear-gradient(135deg,#1a3d1a,#16a34a); color: #86efac; }
+.av-c { background: linear-gradient(135deg,#3d1a1a,#dc2626); color: #fca5a5; }
+.av-d { background: linear-gradient(135deg,#2d1a3d,#9333ea); color: #d8b4fe; }
+.av-e { background: linear-gradient(135deg,#3d2a1a,#d97706); color: #fcd34d; }
 .lead-info { flex: 1; min-width: 0; }
-.lead-company { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 600; color: var(--text); }
+.lead-co { font-family: 'Syne', sans-serif; font-size: 15px; font-weight: 700; }
 .lead-sub { font-size: 12px; color: var(--text3); margin-top: 3px; }
-
-.lead-score { text-align: right; flex-shrink: 0; }
-.score-num { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; }
-.score-high { color: var(--green); }
-.score-mid { color: var(--amber); }
-.score-bar { width: 56px; height: 3px; background: var(--bg4); border-radius: 2px; margin: 5px 0 3px auto; }
-.score-fill-h { height: 3px; border-radius: 2px; background: var(--green); }
-.score-fill-m { height: 3px; border-radius: 2px; background: var(--amber); }
-.score-note { font-size: 10px; color: var(--text3); max-width: 120px; text-align: right; line-height: 1.4; }
-
-.lead-body { padding: 16px 20px; display: flex; flex-direction: column; gap: 14px; }
-
-.section-lbl {
-  font-size: 10px;
-  font-weight: 600;
-  letter-spacing: 0.08em;
-  color: var(--text3);
-  text-transform: uppercase;
-  margin-bottom: 6px;
-}
-
-.now-box {
-  background: var(--bg3);
-  border-left: 2px solid var(--amber);
-  padding: 10px 14px;
-  border-radius: 0 8px 8px 0;
-  font-size: 12.5px;
-  color: var(--text2);
-  line-height: 1.65;
-}
-
-.trigger-box {
-  background: var(--amber-bg);
-  border: 1px solid rgba(245,158,11,0.2);
-  border-radius: var(--radius-sm);
-  padding: 10px 14px;
-}
-
-.trigger-lbl {
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--amber);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  margin-bottom: 4px;
-}
-
-.trigger-txt { font-size: 12px; color: rgba(245,158,11,0.8); line-height: 1.55; }
-
+.score-col { text-align: right; flex-shrink: 0; }
+.sc-h { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--green); }
+.sc-m { font-family: 'Syne', sans-serif; font-size: 26px; font-weight: 800; color: var(--amber); }
+.sc-bar { width: 54px; height: 3px; background: var(--bg4); border-radius: 2px; margin: 5px 0 3px auto; }
+.sc-fh { height: 3px; border-radius: 2px; background: var(--green); }
+.sc-fm { height: 3px; border-radius: 2px; background: var(--amber); }
+.sc-note { font-size: 10px; color: var(--text3); max-width: 115px; text-align: right; line-height: 1.4; }
+.lead-body { padding: 15px 18px; display: flex; flex-direction: column; gap: 13px; }
+.slbl { font-size: 10px; font-weight: 500; color: var(--text3); letter-spacing: .08em; text-transform: uppercase; margin-bottom: 5px; }
+.now-box { background: var(--bg3); border-left: 2px solid var(--amber); padding: 9px 13px; border-radius: 0 var(--rs) var(--rs) 0; font-size: 12.5px; color: var(--text2); line-height: 1.65; }
+.trig-box { background: var(--abg); border: 1px solid var(--abd); border-radius: var(--rs); padding: 9px 13px; }
+.trig-lbl { font-size: 10px; font-weight: 500; color: var(--amber); letter-spacing: .06em; text-transform: uppercase; margin-bottom: 3px; }
+.trig-txt { font-size: 12px; color: rgba(245,158,11,.8); line-height: 1.55; }
 .sigs { display: flex; flex-wrap: wrap; gap: 5px; }
-
-.sig {
-  font-size: 11px;
-  padding: 3px 10px;
-  border-radius: 999px;
-}
-
-.sig-hot { background: var(--red-bg); color: #fca5a5; border: 1px solid rgba(239,68,68,0.2); }
-.sig-warm { background: var(--blue-bg); color: #93c5fd; border: 1px solid rgba(59,130,246,0.2); }
-
-.pitch-box {
-  background: var(--bg3);
-  border-radius: var(--radius-sm);
-  padding: 12px 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.pitch-row { display: flex; gap: 10px; align-items: flex-start; }
-
-.pitch-tag {
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 999px;
-  flex-shrink: 0;
-  margin-top: 2px;
-}
-
-.pt-p { background: var(--red-bg); color: #fca5a5; }
-.pt-r { background: var(--blue-bg); color: #93c5fd; }
-.pt-o { background: var(--green-bg); color: #86efac; }
-.pitch-txt { font-size: 12px; color: var(--text2); line-height: 1.55; }
-
-.refs { display: flex; gap: 6px; flex-wrap: wrap; }
-
-.ref-pill {
-  font-size: 11px;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: 999px;
-  padding: 3px 12px;
-  color: var(--text3);
-}
+.sig-h { font-size: 11px; padding: 3px 10px; border-radius: 999px; background: var(--rbg); color: #fca5a5; border: 1px solid var(--rbd); }
+.sig-w { font-size: 11px; padding: 3px 10px; border-radius: 999px; background: var(--bbg); color: #93c5fd; border: 1px solid var(--bbd); }
+.pitch-box { background: var(--bg3); border-radius: var(--rs); padding: 11px 13px; display: flex; flex-direction: column; gap: 7px; }
+.pitch-row { display: flex; gap: 9px; align-items: flex-start; }
+.ptag { font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 999px; flex-shrink: 0; margin-top: 2px; }
+.pt-p { background: var(--rbg); color: #fca5a5; }
+.pt-r { background: var(--bbg); color: #93c5fd; }
+.pt-o { background: var(--gbg); color: #86efac; }
+.ptxt { font-size: 12px; color: var(--text2); line-height: 1.55; }
+.refs { display: flex; gap: 5px; flex-wrap: wrap; }
+.ref-pill { font-size: 11px; background: var(--bg3); border: 1px solid var(--border); border-radius: 999px; padding: 3px 11px; color: var(--text3); }
 
 /* CONTACT BLOCK */
-.contact-block {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  overflow: hidden;
-  margin-bottom: 8px;
-}
-
-.contact-block:last-child { margin-bottom: 0; }
-
-.contact-header {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 14px 8px;
-}
-
-.c-av {
-  width: 32px; height: 32px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 10px; font-weight: 700; flex-shrink: 0;
-}
-
-.ct1 { background: rgba(34,197,94,0.15); color: #86efac; }
-.ct2 { background: rgba(59,130,246,0.15); color: #93c5fd; }
+.cblock { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--rs); overflow: hidden; margin-bottom: 8px; }
+.cblock:last-child { margin-bottom: 0; }
+.chead { display: flex; align-items: center; gap: 9px; padding: 9px 13px 7px; }
+.cav { width: 31px; height: 31px; border-radius: 50%; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; }
+.ct1 { background: rgba(34,197,94,.15); color: #86efac; }
+.ct2 { background: rgba(59,130,246,.15); color: #93c5fd; }
 .ct3 { background: var(--bg4); color: var(--text3); border: 1px solid var(--border); }
-
-.c-name { font-size: 12.5px; font-weight: 500; color: var(--text); }
-.c-title { font-size: 11px; color: var(--text3); margin-top: 1px; }
-
-.c-tier {
-  margin-left: auto;
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 9px;
-  border-radius: 999px;
+.cname { font-size: 12.5px; font-weight: 500; }
+.ctitle { font-size: 11px; color: var(--text3); margin-top: 1px; }
+.ctier { margin-left: auto; font-size: 10px; font-weight: 500; padding: 2px 9px; border-radius: 999px; flex-shrink: 0; }
+.clinks { display: flex; gap: 5px; padding: 0 13px 7px; flex-wrap: wrap; }
+.clink { font-size: 10px; padding: 2px 9px; border-radius: 999px; border: 1px solid var(--border); color: var(--text3); text-decoration: none; transition: all .15s; cursor: pointer; }
+.clink:hover { border-color: var(--border2); color: var(--text2); }
+.v-ok { background: var(--gbg); color: var(--green); border-color: var(--gbd); }
+.v-warn { background: var(--abg); color: var(--amber); border-color: var(--abd); }
+.v-need { background: var(--bbg); color: var(--blue); border-color: var(--bbd); }
+.cdiv { border: none; border-top: 1px solid var(--border); }
+.emailsec { padding: 9px 13px 13px; }
+.ver-a { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 4px; display: inline-block; margin-bottom: 4px; background: var(--rbg); color: #fca5a5; }
+.ver-b { font-size: 10px; font-weight: 500; padding: 2px 7px; border-radius: 4px; display: inline-block; margin-bottom: 4px; background: var(--bbg); color: #93c5fd; }
+.esubj { font-size: 12px; font-weight: 500; color: var(--text); margin-bottom: 5px; line-height: 1.4; }
+.ebody-box {
+  font-size: 11.5px; color: var(--text2); line-height: 1.7; white-space: pre-line;
+  background: var(--bg); border: 1px solid var(--border); border-radius: var(--rs);
+  padding: 9px 12px; margin-bottom: 8px;
 }
+.copy-btn { font-size: 11px; padding: 5px 12px; background: var(--bg4); border: 1px solid var(--border); border-radius: var(--rs); color: var(--text2); cursor: pointer; transition: all .15s; display: inline-block; margin-bottom: 10px; }
+.copy-btn:hover { background: var(--bg3); color: var(--text); border-color: var(--border2); }
 
-.t1b { background: rgba(34,197,94,0.15); color: #86efac; }
-.t2b { background: rgba(59,130,246,0.15); color: #93c5fd; }
-.t3b { background: var(--bg4); color: var(--text3); border: 1px solid var(--border); }
+/* ERR BOX */
+.err-box { padding: 16px 18px; background: var(--rbg); border: 1px solid var(--rbd); border-radius: var(--r); color: #fca5a5; font-size: 13px; line-height: 1.7; }
 
-.c-links {
-  display: flex;
-  gap: 6px;
-  padding: 0 14px 8px;
-  flex-wrap: wrap;
-}
+/* BRIEF PANEL */
+.brief-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 14px; }
+.bcard { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 18px; }
+.bcard-title { font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 700; margin-bottom: 14px; display: flex; align-items: center; gap: 7px; }
+.bdot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.sig-item { display: flex; align-items: flex-start; gap: 9px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+.sig-item:last-child { border-bottom: none; }
+.sig-ico { width: 26px; height: 26px; border-radius: 7px; background: var(--bg3); display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; }
+.sig-co { font-size: 12.5px; font-weight: 500; }
+.sig-news { font-size: 11.5px; color: var(--text3); line-height: 1.5; margin-top: 2px; }
+.sig-tag { margin-left: auto; font-size: 10px; font-weight: 500; padding: 2px 8px; border-radius: 999px; flex-shrink: 0; white-space: nowrap; }
+.fu-due-item { display: flex; align-items: center; gap: 9px; padding: 9px 0; border-bottom: 1px solid var(--border); }
+.fu-due-item:last-child { border-bottom: none; }
+.fu-days { width: 34px; height: 34px; border-radius: 9px; background: var(--bg4); display: flex; align-items: center; justify-content: center; font-family: 'Syne', sans-serif; font-size: 11px; font-weight: 700; color: var(--amber); flex-shrink: 0; }
+.fu-name { font-size: 12.5px; font-weight: 500; }
+.fu-co { font-size: 11.5px; color: var(--text3); margin-top: 2px; }
+.fu-act { margin-left: auto; font-size: 11px; padding: 4px 12px; background: var(--bg4); border: 1px solid var(--border); border-radius: var(--rs); color: var(--text2); cursor: pointer; transition: all .15s; }
+.fu-act:hover { background: var(--glow); border-color: rgba(255,77,28,.25); color: var(--accent2); }
 
-.c-link {
-  font-size: 10px;
-  padding: 2px 9px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  color: var(--text3);
-  text-decoration: none;
-  transition: all 0.15s;
-  cursor: pointer;
-}
+/* FOLLOW-UP PANEL */
+.fu-out { display: flex; flex-direction: column; gap: 14px; }
+.fu-result { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; }
+.fu-result-head { padding: 13px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.fu-result-body { padding: 14px 16px; }
 
-.c-link:hover { border-color: var(--border2); color: var(--text2); }
-.v-ok { background: var(--green-bg); color: var(--green); border-color: rgba(34,197,94,0.2); }
-.v-warn { background: var(--amber-bg); color: var(--amber); border-color: rgba(245,158,11,0.2); }
-.v-need { background: var(--blue-bg); color: var(--blue); border-color: rgba(59,130,246,0.2); }
+/* PIPELINE */
+.pipe-grid { display: grid; grid-template-columns: repeat(5,1fr); gap: 10px; }
+.pipe-col { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); overflow: hidden; min-height: 380px; }
+.pipe-col-head { padding: 11px 13px; border-bottom: 1px solid var(--border); display: flex; align-items: center; justify-content: space-between; }
+.pipe-col-title { font-size: 11px; font-weight: 500; color: var(--text2); letter-spacing: .06em; text-transform: uppercase; }
+.pipe-count { font-family: 'Syne', sans-serif; font-size: 12px; font-weight: 700; background: var(--bg4); padding: 2px 8px; border-radius: 999px; }
+.pipe-items { padding: 9px; display: flex; flex-direction: column; gap: 7px; }
+.pipe-item { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--rs); padding: 9px 11px; cursor: pointer; transition: border-color .15s; }
+.pipe-item:hover { border-color: var(--border2); }
+.pi-name { font-size: 12px; font-weight: 500; }
+.pi-co { font-size: 11px; color: var(--text3); margin-top: 2px; }
+.pi-date { font-size: 10px; color: var(--text3); margin-top: 5px; }
 
-.contact-divider { border: none; border-top: 1px solid var(--border); }
-
-.email-section { padding: 10px 14px 14px; }
-
-.ver-a {
-  font-size: 10px; font-weight: 600;
-  padding: 2px 7px; border-radius: 4px;
-  display: inline-block; margin-bottom: 5px;
-  background: var(--red-bg); color: #fca5a5;
-}
-
-.ver-b {
-  font-size: 10px; font-weight: 600;
-  padding: 2px 7px; border-radius: 4px;
-  display: inline-block; margin-bottom: 5px;
-  background: var(--blue-bg); color: #93c5fd;
-}
-
-.email-subj {
-  font-size: 12px;
-  font-weight: 500;
-  color: var(--text);
-  margin-bottom: 5px;
-  line-height: 1.4;
-}
-
-.email-body-box {
-  font-size: 11.5px;
-  color: var(--text2);
-  line-height: 1.7;
-  white-space: pre-line;
-  background: var(--bg);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
-  margin-bottom: 10px;
-  font-family: 'DM Sans', sans-serif;
-}
-
-.copy-email-btn {
-  font-size: 11px;
-  padding: 5px 12px;
-  background: var(--bg4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text2);
-  cursor: pointer;
-  transition: all 0.15s;
-  margin-bottom: 10px;
-}
-
-.copy-email-btn:hover { background: var(--bg3); color: var(--text); border-color: var(--border2); }
-
-/* LEGEND */
-.legend-row {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  margin-bottom: 8px;
-}
-
-.legend-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: var(--text3);
-}
-
-.legend-dot {
-  width: 7px; height: 7px;
-  border-radius: 50%;
-}
-
-.tier-legend {
-  display: flex;
-  gap: 16px;
-  flex-wrap: wrap;
-  margin-bottom: 16px;
-}
-
-.tier-legend-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 11px;
-  color: var(--text3);
-}
-
-.tier-ball {
-  width: 20px; height: 20px;
-  border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 9px; font-weight: 700;
-}
-
-/* ── LOADING STATE ── */
-.loading-state {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: 80px 40px;
-  gap: 20px;
-  text-align: center;
-}
-
-.loading-ring {
-  width: 48px; height: 48px;
-  border: 3px solid var(--bg4);
-  border-top-color: var(--accent);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-.loading-text {
-  font-family: 'Syne', sans-serif;
-  font-size: 14px;
-  font-weight: 600;
-  color: var(--text2);
-}
-
-.loading-sub { font-size: 12px; color: var(--text3); }
-
-/* ── DAILY BRIEF PANEL ── */
-.brief-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-  margin-bottom: 20px;
-}
-
-.brief-card {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  padding: 20px;
-}
-
-.brief-card-title {
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--text);
-  margin-bottom: 14px;
-  display: flex;
-  align-items: center;
-  gap: 8px;
-}
-
-.brief-dot {
-  width: 8px; height: 8px;
-  border-radius: 50%;
-}
-
-.signal-item {
-  display: flex;
-  align-items: flex-start;
-  gap: 10px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.signal-item:last-child { border-bottom: none; }
-
-.signal-icon {
-  width: 28px; height: 28px;
-  border-radius: 8px;
-  background: var(--bg3);
-  display: flex; align-items: center; justify-content: center;
-  font-size: 13px;
-  flex-shrink: 0;
-}
-
-.signal-company { font-size: 12.5px; font-weight: 500; color: var(--text); }
-.signal-news { font-size: 11.5px; color: var(--text3); line-height: 1.5; margin-top: 2px; }
-.signal-tag {
-  margin-left: auto;
-  font-size: 10px;
-  font-weight: 600;
-  padding: 2px 8px;
-  border-radius: 999px;
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
-.fu-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 0;
-  border-bottom: 1px solid var(--border);
-}
-
-.fu-item:last-child { border-bottom: none; }
-
-.fu-days {
-  width: 36px; height: 36px;
-  border-radius: 10px;
-  background: var(--bg4);
-  display: flex; align-items: center; justify-content: center;
-  font-family: 'Syne', sans-serif;
-  font-size: 12px;
-  font-weight: 700;
-  color: var(--amber);
-  flex-shrink: 0;
-}
-
-.fu-name { font-size: 12.5px; font-weight: 500; color: var(--text); }
-.fu-company { font-size: 11.5px; color: var(--text3); margin-top: 2px; }
-
-.fu-action {
-  margin-left: auto;
-  font-size: 11px;
-  padding: 4px 12px;
-  background: var(--bg4);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text2);
-  cursor: pointer;
-  transition: all 0.15s;
-}
-
-.fu-action:hover { background: var(--accent-glow); border-color: rgba(255,77,28,0.2); color: var(--accent2); }
-
-/* ── PIPELINE PANEL ── */
-.pipeline-grid {
-  display: grid;
-  grid-template-columns: repeat(5, 1fr);
-  gap: 12px;
-}
-
-.pipeline-col {
-  background: var(--bg2);
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  overflow: hidden;
-  min-height: 400px;
-}
-
-.pipeline-col-header {
-  padding: 12px 14px;
-  border-bottom: 1px solid var(--border);
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-}
-
-.pipeline-col-title {
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--text2);
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.pipeline-count {
-  font-family: 'Syne', sans-serif;
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--text);
-  background: var(--bg4);
-  padding: 2px 8px;
-  border-radius: 999px;
-}
-
-.pipeline-items { padding: 10px; display: flex; flex-direction: column; gap: 8px; }
-
-.pipeline-item {
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  padding: 10px 12px;
-  cursor: pointer;
-  transition: border-color 0.15s;
-}
-
-.pipeline-item:hover { border-color: var(--border2); }
-
-.pi-name { font-size: 12px; font-weight: 500; color: var(--text); }
-.pi-company { font-size: 11px; color: var(--text3); margin-top: 2px; }
-.pi-date { font-size: 10px; color: var(--text3); margin-top: 6px; }
-
-/* ── API KEY SECTION ── */
-.api-setup {
-  background: var(--bg2);
-  border: 1px solid rgba(255,77,28,0.2);
-  border-radius: var(--radius);
-  padding: 20px;
-  margin-bottom: 20px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-.api-setup-icon { font-size: 24px; flex-shrink: 0; }
-
-.api-setup-text { flex: 1; }
-.api-setup-title { font-family: 'Syne', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 4px; }
-.api-setup-sub { font-size: 12px; color: var(--text3); }
-
-.api-key-row { display: flex; gap: 8px; margin-top: 10px; }
-
-.api-key-input {
-  flex: 1;
-  background: var(--bg3);
-  border: 1px solid var(--border);
-  border-radius: var(--radius-sm);
-  color: var(--text);
-  font-family: 'DM Sans', monospace;
-  font-size: 12px;
-  padding: 8px 12px;
-  outline: none;
-}
-
-.api-key-input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-
-.save-key-btn {
-  padding: 8px 16px;
-  background: var(--accent);
-  color: white;
-  border: none;
-  border-radius: var(--radius-sm);
-  font-size: 12px;
-  font-weight: 600;
-  cursor: pointer;
-  font-family: 'Syne', sans-serif;
-}
-
-.save-key-btn:hover { background: var(--accent2); }
-
-/* ── TOAST ── */
-.toast {
-  position: fixed;
-  bottom: 24px;
-  right: 24px;
-  background: var(--bg2);
-  border: 1px solid var(--border2);
-  border-radius: var(--radius-sm);
-  padding: 12px 20px;
-  font-size: 13px;
-  color: var(--text);
-  z-index: 9999;
-  transform: translateY(20px);
-  opacity: 0;
-  transition: all 0.25s;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-}
-
+/* TOAST */
+.toast { position: fixed; bottom: 22px; right: 22px; background: var(--bg2); border: 1px solid var(--border2); border-radius: var(--rs); padding: 11px 18px; font-size: 13px; color: var(--text); z-index: 9999; display: flex; align-items: center; gap: 9px; transform: translateY(20px); opacity: 0; transition: all .25s; pointer-events: none; }
 .toast.show { transform: translateY(0); opacity: 1; }
-.toast-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); }
+.toast-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); flex-shrink: 0; }
 
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
 ::-webkit-scrollbar-thumb { background: var(--bg4); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--border2); }
 
-/* ── RESPONSIVE ── */
-@media (max-width: 1100px) {
-  .find-grid { grid-template-columns: 1fr; }
-  .brief-grid { grid-template-columns: 1fr; }
-  .pipeline-grid { grid-template-columns: repeat(3, 1fr); }
-}
-
-@media (max-width: 768px) {
-  .sidebar { width: 200px; }
-  .main { margin-left: 200px; }
-  .stat-row { grid-template-columns: repeat(2, 1fr); }
-  .pipeline-grid { grid-template-columns: 1fr 1fr; }
-}
+@media(max-width:1100px){ .find-grid{grid-template-columns:1fr} .brief-grid{grid-template-columns:1fr} .pipe-grid{grid-template-columns:repeat(3,1fr)} }
+@media(max-width:700px){ .sidebar{width:52px} .logo-name,.logo-sub,.nav-item span:not(.nav-badge),.user-name,.user-role{display:none} .main{margin-left:52px} .stat-row{grid-template-columns:1fr 1fr} }
 </style>
 </head>
 <body>
-
 <div class="app">
 
-  <!-- SIDEBAR -->
-  <aside class="sidebar">
-    <div class="sidebar-logo">
-      <div class="logo-mark">
-        <div class="logo-icon">NA</div>
-        <div class="logo-text">Next Audio</div>
+<!-- SIDEBAR -->
+<aside class="sidebar">
+  <div class="logo-wrap">
+    <div class="logo-row">
+      <div class="logo-icon">NA</div>
+      <div class="logo-name">Next Audio</div>
+    </div>
+    <div class="logo-sub">Prospecting Engine v3.2</div>
+  </div>
+  <nav class="nav">
+    <div class="nav-lbl">Main</div>
+    <div class="nav-item active" id="nav-find" onclick="goTab('find')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="7" cy="7" r="5"/><path d="M12 12l2 2"/></svg>
+      <span>Find Leads</span>
+    </div>
+    <div class="nav-item" id="nav-brief" onclick="goTab('brief')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="12" height="12" rx="2"/><path d="M5 6h6M5 9h4"/></svg>
+      <span>Daily Brief</span>
+      <span class="nav-badge">3</span>
+    </div>
+    <div class="nav-item" id="nav-followup" onclick="goTab('followup')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 4l6 5 6-5M2 4h12v9a1 1 0 01-1 1H3a1 1 0 01-1-1V4z"/></svg>
+      <span>Follow-ups</span>
+    </div>
+    <div class="nav-item" id="nav-pipeline" onclick="goTab('pipeline')">
+      <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12V4l4 4 4-4 4 4v8"/></svg>
+      <span>Pipeline</span>
+    </div>
+    <div class="nav-lbl">Quick market</div>
+    <div class="nav-item" onclick="quickM('singapore')"><span>🇸🇬</span><span>Singapore</span></div>
+    <div class="nav-item" onclick="quickM('uae')"><span>🇦🇪</span><span>UAE / Middle East</span></div>
+    <div class="nav-item" onclick="quickM('latam')"><span>🌎</span><span>LATAM</span></div>
+    <div class="nav-item" onclick="quickM('uk')"><span>🇬🇧</span><span>UK</span></div>
+    <div class="nav-item" onclick="quickM('usa')"><span>🇺🇸</span><span>USA / Canada</span></div>
+  </nav>
+  <div class="sidebar-foot">
+    <div class="user-row">
+      <div class="user-av">NA</div>
+      <div><div class="user-name">Next Audio</div><div class="user-role">Client Partners</div></div>
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <header class="topbar">
+    <div class="topbar-title" id="topbar-title">Find Leads</div>
+    <div class="live-dot"></div>
+    <div class="topbar-label">Engine active</div>
+    <div class="model-pill">claude-sonnet-4-20250514</div>
+  </header>
+
+  <div class="content">
+
+    <!-- API KEY BANNER - hidden once key is set -->
+    <div class="key-banner" id="key-banner">
+      <div style="font-size:22px;flex-shrink:0;margin-top:2px">🔑</div>
+      <div class="key-banner-body">
+        <div class="key-banner-title">Enter your Anthropic API key to activate the engine</div>
+        <div class="key-banner-sub">Stored only in your browser. Goes directly to Anthropic — no middleman.</div>
+        <div class="key-row">
+          <input class="key-input" id="key-input" type="password" placeholder="sk-ant-api03-...">
+          <button class="key-save" onclick="saveKey()">Save & Activate</button>
+        </div>
       </div>
-      <div class="logo-sub">Prospecting Engine v3.2</div>
     </div>
 
-    <nav class="sidebar-nav">
-      <div class="nav-label">Main</div>
-      <div class="nav-item active" onclick="switchTab('find')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-          <circle cx="7" cy="7" r="5"/><path d="M12 12l2 2"/>
-        </svg>
-        Find Leads
-      </div>
-      <div class="nav-item" onclick="switchTab('brief')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-          <rect x="2" y="2" width="12" height="12" rx="2"/>
-          <path d="M5 6h6M5 9h4"/>
-        </svg>
-        Daily Brief
-        <span class="nav-badge">3</span>
-      </div>
-      <div class="nav-item" onclick="switchTab('followup')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M2 4l6 5 6-5M2 4h12v9a1 1 0 01-1 1H3a1 1 0 01-1-1V4z"/>
-        </svg>
-        Follow-ups
-      </div>
-      <div class="nav-item" onclick="switchTab('pipeline')">
-        <svg class="nav-icon" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5">
-          <path d="M2 12V4l4 4 4-4 4 4v8"/>
-        </svg>
-        Pipeline
-      </div>
-      <div class="nav-label">Markets</div>
-      <div class="nav-item" onclick="filterMarket('singapore')">
-        <span style="font-size:12px">🇸🇬</span> Singapore
-      </div>
-      <div class="nav-item" onclick="filterMarket('uae')">
-        <span style="font-size:12px">🇦🇪</span> UAE / Middle East
-      </div>
-      <div class="nav-item" onclick="filterMarket('latam')">
-        <span style="font-size:12px">🌎</span> LATAM
-      </div>
-      <div class="nav-item" onclick="filterMarket('europe')">
-        <span style="font-size:12px">🇪🇺</span> Europe
-      </div>
-    </nav>
+    <!-- TABS -->
+    <div class="tabs">
+      <div class="tab active" id="tab-find" onclick="goTab('find')">Find Leads</div>
+      <div class="tab" id="tab-brief" onclick="goTab('brief')">Daily Brief</div>
+      <div class="tab" id="tab-followup" onclick="goTab('followup')">Follow-ups</div>
+      <div class="tab" id="tab-pipeline" onclick="goTab('pipeline')">Pipeline</div>
+    </div>
 
-    <div class="sidebar-footer">
-      <div class="user-card">
-        <div class="user-av">S</div>
-        <div>
-          <div class="user-name">Santiago</div>
-          <div class="user-role">Client Partner</div>
+    <!-- ═══════════ FIND LEADS ═══════════ -->
+    <div class="panel active" id="panel-find">
+      <div class="find-grid">
+
+        <!-- FILTERS -->
+        <div class="filters-col">
+          <div class="fcard">
+            <div class="fcard-head"><div class="fcard-ico">🎯</div><div class="fcard-title">Target</div></div>
+            <div class="fcard-body">
+              <div class="fg">
+                <div class="flbl">Industry</div>
+                <select class="fsel" id="f-ind">
+                  <option value="">All industries (best fit)</option>
+                  <option value="media_agency">Media Agencies</option>
+                  <option value="travel_airlines">Travel & Airlines</option>
+                  <option value="fintech_banking">Fintech & Banking</option>
+                  <option value="ecommerce_retail">E-commerce & Retail</option>
+                  <option value="telecom">Telecom</option>
+                  <option value="automotive">Automotive</option>
+                  <option value="luxury_fashion">Luxury & Fashion</option>
+                  <option value="fmcg">FMCG</option>
+                  <option value="tech_saas">Tech & SaaS</option>
+                  <option value="gaming">Gaming & Betting</option>
+                  <option value="health_pharma">Health & Pharma</option>
+                </select>
+              </div>
+              <div class="fg">
+                <div class="flbl">Market / Region</div>
+                <select class="fsel" id="f-mkt">
+                  <option value="">Global (best opportunities)</option>
+                  <option value="singapore">Singapore</option>
+                  <option value="apac">APAC</option>
+                  <option value="uae">UAE / Middle East</option>
+                  <option value="ksa">Saudi Arabia</option>
+                  <option value="uk">United Kingdom</option>
+                  <option value="usa">USA / Canada</option>
+                  <option value="latam">Latin America</option>
+                  <option value="europe">Europe</option>
+                  <option value="india">India</option>
+                </select>
+              </div>
+              <div class="fg">
+                <div class="flbl">Company type</div>
+                <select class="fsel" id="f-type">
+                  <option value="any">Any</option>
+                  <option value="agency">Media agency</option>
+                  <option value="brand">Brand / Advertiser</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="fcard">
+            <div class="fcard-head"><div class="fcard-ico">⚡</div><div class="fcard-title">Buying Signals</div></div>
+            <div class="fcard-body">
+              <div class="chips" id="chips">
+                <div class="chip on" onclick="this.classList.toggle('on')">New client win</div>
+                <div class="chip on" onclick="this.classList.toggle('on')">New leadership</div>
+                <div class="chip on" onclick="this.classList.toggle('on')">Q2/Q3 budget open</div>
+                <div class="chip" onclick="this.classList.toggle('on')">Audio spend active</div>
+                <div class="chip" onclick="this.classList.toggle('on')">Social saturation</div>
+                <div class="chip" onclick="this.classList.toggle('on')">Market expansion</div>
+                <div class="chip" onclick="this.classList.toggle('on')">High CAC</div>
+                <div class="chip" onclick="this.classList.toggle('on')">Competitor in audio</div>
+                <div class="chip" onclick="this.classList.toggle('on')">AI/data mandate</div>
+                <div class="chip" onclick="this.classList.toggle('on')">Merger/integration</div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fcard">
+            <div class="fcard-head"><div class="fcard-ico">📊</div><div class="fcard-title">Output</div></div>
+            <div class="fcard-body">
+              <div class="fg">
+                <div class="flbl">Number of leads</div>
+                <div class="qty-row">
+                  <input type="range" class="qty-sl" id="qty" min="1" max="10" value="5" oninput="document.getElementById('qval').textContent=this.value">
+                  <div class="qty-val" id="qval">5</div>
+                </div>
+              </div>
+              <div class="fg">
+                <div class="flbl">Additional context (optional)</div>
+                <input class="finput" id="f-ctx" placeholder="e.g. Focus on brands launching Q3 campaigns">
+              </div>
+              <button class="gen-btn" id="gen-btn" onclick="generateLeads()">
+                <span id="btn-txt">Generate Leads</span>
+                <div class="spin" id="btn-spin"></div>
+                <svg id="btn-ico" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="7" cy="7" r="5"/><path d="M12 12l2 2"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- RESULTS -->
+        <div class="results-col">
+          <div id="res-header" style="display:none">
+            <div class="res-meta">
+              <div class="res-title" id="res-title"></div>
+              <div class="bdgs" id="res-bdgs"></div>
+            </div>
+            <div class="stat-row" id="stat-row"></div>
+            <div class="legend-row">
+              <div class="leg-item"><span class="leg-dot" style="background:var(--red)"></span>Hot signal</div>
+              <div class="leg-item"><span class="leg-dot" style="background:var(--blue)"></span>Warm signal</div>
+            </div>
+            <div class="tier-legend">
+              <div class="tier-li"><div class="tier-ball t1b-s">1</div>Primary — first outreach</div>
+              <div class="tier-li"><div class="tier-ball t2b-s">2</div>Secondary — 4 days no reply</div>
+              <div class="tier-li"><div class="tier-ball t3b-s">3</div>Escalation — 2 weeks</div>
+            </div>
+          </div>
+
+          <div class="loading-wrap" id="loading-wrap">
+            <div class="loading-ring"></div>
+            <div class="loading-t" id="load-t">Scanning signals...</div>
+            <div class="loading-s" id="load-s">Verifying contacts in real time</div>
+          </div>
+
+          <div id="empty-state">
+            <div class="empty-state">
+              <div class="empty-ico">🎯</div>
+              <div class="empty-title">Ready to generate leads</div>
+              <div class="empty-sub">Choose your filters and click Generate. The engine verifies contacts and writes emails ready to send.</div>
+            </div>
+          </div>
+
+          <div id="leads-out"></div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ═══════════ DAILY BRIEF ═══════════ -->
+    <div class="panel" id="panel-brief">
+      <div class="brief-grid">
+        <div class="bcard">
+          <div class="bcard-title"><span class="bdot" style="background:var(--red)"></span>Hot signals today</div>
+          <div class="sig-item">
+            <div class="sig-ico">🏆</div>
+            <div><div class="sig-co">Omnicom / OMD Singapore</div><div class="sig-news">IBM global mandate + Under Armour APAC + Dyson $502M — record pitch cycle in 2026.</div></div>
+            <span class="sig-tag sig-h">HOT</span>
+          </div>
+          <div class="sig-item">
+            <div class="sig-ico">👔</div>
+            <div><div class="sig-co">Dentsu Global</div><div class="sig-news">New CEO Takeshi Sano effective March 27. Capability review open across all hubs.</div></div>
+            <span class="sig-tag sig-h">HOT</span>
+          </div>
+          <div class="sig-item">
+            <div class="sig-ico">📢</div>
+            <div><div class="sig-co">Initiative Singapore</div><div class="sig-news">Named Media Agency of the Year — Campaign US Awards 2026.</div></div>
+            <span class="sig-tag sig-h">HOT</span>
+          </div>
+        </div>
+        <div class="bcard">
+          <div class="bcard-title"><span class="bdot" style="background:var(--blue)"></span>Warm signals</div>
+          <div class="sig-item">
+            <div class="sig-ico">🤖</div>
+            <div><div class="sig-co">Havas Media Singapore</div><div class="sig-news">Zoheb Gafoor at TikTok Partner Summit + Hoppr CTV event. Active channel evaluation mode.</div></div>
+            <span class="sig-tag sig-w">WARM</span>
+          </div>
+          <div class="sig-item">
+            <div class="sig-ico">📈</div>
+            <div><div class="sig-co">Publicis Media Singapore</div><div class="sig-news">Ian Loon posted "offline is the new luxury" — direct audio hook. #1 new business SG 2025.</div></div>
+            <span class="sig-tag sig-w">WARM</span>
+          </div>
+          <div class="sig-item">
+            <div class="sig-ico">🔗</div>
+            <div><div class="sig-co">Omnicom-IPG integration</div><div class="sig-news">Propositions standardising — differentiation window open across all IPG agencies.</div></div>
+            <span class="sig-tag sig-w">WARM</span>
+          </div>
+        </div>
+      </div>
+      <div class="bcard">
+        <div class="bcard-title"><span class="bdot" style="background:var(--amber)"></span>Follow-ups due today</div>
+        <div class="fu-due-item">
+          <div class="fu-days">+4d</div>
+          <div><div class="fu-name">Adamson Alagan</div><div class="fu-co">General Manager · OMD Singapore</div></div>
+          <button class="fu-act" onclick="prefillFU('Adamson Alagan','General Manager, OMD Singapore','1')">Draft FU1</button>
+        </div>
+        <div class="fu-due-item">
+          <div class="fu-days">+4d</div>
+          <div><div class="fu-name">Zoheb Gafoor</div><div class="fu-co">GM Digital SEA · Havas Media</div></div>
+          <button class="fu-act" onclick="prefillFU('Zoheb Gafoor','GM Digital SEA, Havas Media Singapore','1')">Draft FU1</button>
+        </div>
+        <div class="fu-due-item">
+          <div class="fu-days">+9d</div>
+          <div><div class="fu-name">Zachary Lim</div><div class="fu-co">Head of Singapore · IPG Mediabrands</div></div>
+          <button class="fu-act" onclick="prefillFU('Zachary Lim','Head of Singapore, IPG Mediabrands','2')">Draft FU2</button>
         </div>
       </div>
     </div>
-  </aside>
 
-  <!-- MAIN -->
-  <main class="main">
-    <header class="topbar">
-      <div class="topbar-title" id="topbar-title">Find Leads</div>
-      <div class="status-dot"></div>
-      <div class="status-text">Engine active</div>
-      <div class="topbar-model">claude-sonnet-4-20250514</div>
-    </header>
-
-    <div class="content">
-
-      <!-- API KEY SETUP -->
-      <div class="api-setup" id="api-setup">
-        <div class="api-setup-icon">🔑</div>
-        <div class="api-setup-text">
-          <div class="api-setup-title">Connect your Anthropic API key to activate the engine</div>
-          <div class="api-setup-sub">Your key is stored only in your browser — never sent anywhere except directly to Anthropic.</div>
-          <div class="api-key-row">
-            <input type="password" class="api-key-input" id="api-key-input" placeholder="sk-ant-...">
-            <button class="save-key-btn" onclick="saveKey()">Save & Activate</button>
+    <!-- ═══════════ FOLLOW-UPS ═══════════ -->
+    <div class="panel" id="panel-followup">
+      <div class="fcard" style="max-width:560px;margin-bottom:20px">
+        <div class="fcard-head"><div class="fcard-ico">✉️</div><div class="fcard-title">Generate Follow-up Email</div></div>
+        <div class="fcard-body">
+          <div class="fg"><div class="flbl">Prospect full name</div><input class="finput" id="fu-name" placeholder="e.g. Adamson Alagan"></div>
+          <div class="fg"><div class="flbl">Title & company</div><input class="finput" id="fu-co" placeholder="e.g. General Manager, OMD Singapore"></div>
+          <div class="fg"><div class="flbl">What did the first email say?</div><input class="finput" id="fu-init" placeholder="e.g. Version A — IBM + Under Armour win angle"></div>
+          <div class="fg">
+            <div class="flbl">Follow-up number</div>
+            <select class="fsel" id="fu-num">
+              <option value="1">FU1 — Day 4 · Client-specific use case</option>
+              <option value="2">FU2 — Day 9 · Technical / DSP angle</option>
+              <option value="3">FU3 — Day 15 · Unexpected lateral angle</option>
+              <option value="4">FU4 — Day 22 · Urgency / competitive intel</option>
+              <option value="5">FU5 — Day 30 · Soft close</option>
+            </select>
           </div>
+          <button class="gen-btn" id="fu-gen-btn" onclick="generateFU()">
+            <span id="fu-btn-txt">Generate Follow-up</span>
+            <div class="spin" id="fu-spin"></div>
+            <svg id="fu-btn-ico" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8h12M9 3l5 5-5 5"/></svg>
+          </button>
         </div>
       </div>
-
-      <!-- FIND LEADS PANEL -->
-      <div class="panel active" id="panel-find">
-        <div class="find-grid">
-
-          <!-- FILTERS -->
-          <div class="filters-col">
-            <div class="filter-card">
-              <div class="filter-header">
-                <div class="filter-header-icon">🎯</div>
-                <div class="filter-header-title">Target</div>
-              </div>
-              <div class="filter-body">
-                <div class="form-group">
-                  <div class="form-label">Industry</div>
-                  <select class="form-select" id="filter-industry">
-                    <option value="">All industries</option>
-                    <option value="media_agency">Media Agencies</option>
-                    <option value="travel_airlines">Travel & Airlines</option>
-                    <option value="fintech_banking">Fintech & Banking</option>
-                    <option value="ecommerce_retail">E-commerce & Retail</option>
-                    <option value="telecom">Telecom</option>
-                    <option value="automotive">Automotive</option>
-                    <option value="luxury_fashion">Luxury & Fashion</option>
-                    <option value="fmcg">FMCG</option>
-                    <option value="tech_saas">Tech & SaaS</option>
-                    <option value="gaming">Gaming & Betting</option>
-                    <option value="real_estate">Real Estate</option>
-                    <option value="health_pharma">Health & Pharma</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <div class="form-label">Market / Region</div>
-                  <select class="form-select" id="filter-market">
-                    <option value="">Global</option>
-                    <option value="singapore">Singapore</option>
-                    <option value="apac">APAC</option>
-                    <option value="uae">UAE / Middle East</option>
-                    <option value="ksa">Saudi Arabia</option>
-                    <option value="uk">United Kingdom</option>
-                    <option value="usa">USA / Canada</option>
-                    <option value="latam">LATAM</option>
-                    <option value="europe">Europe</option>
-                    <option value="india">India</option>
-                  </select>
-                </div>
-                <div class="form-group">
-                  <div class="form-label">Company type</div>
-                  <select class="form-select" id="filter-type">
-                    <option value="any">Any</option>
-                    <option value="agency">Media agency</option>
-                    <option value="brand">Brand / Advertiser</option>
-                    <option value="holding">Holding company</option>
-                  </select>
-                </div>
-              </div>
-            </div>
-
-            <div class="filter-card">
-              <div class="filter-header">
-                <div class="filter-header-icon">⚡</div>
-                <div class="filter-header-title">Buying Signals</div>
-              </div>
-              <div class="filter-body">
-                <div class="signal-grid" id="signal-grid">
-                  <div class="signal-chip selected" onclick="toggleSignal(this)">New client win</div>
-                  <div class="signal-chip selected" onclick="toggleSignal(this)">New leadership</div>
-                  <div class="signal-chip selected" onclick="toggleSignal(this)">Q2/Q3 budget open</div>
-                  <div class="signal-chip" onclick="toggleSignal(this)">Audio spend active</div>
-                  <div class="signal-chip" onclick="toggleSignal(this)">Social saturation</div>
-                  <div class="signal-chip" onclick="toggleSignal(this)">Market expansion</div>
-                  <div class="signal-chip" onclick="toggleSignal(this)">High CAC</div>
-                  <div class="signal-chip" onclick="toggleSignal(this)">Competitor in audio</div>
-                  <div class="signal-chip" onclick="toggleSignal(this)">AI/data mandate</div>
-                  <div class="signal-chip" onclick="toggleSignal(this)">Integration/merger</div>
-                </div>
-              </div>
-            </div>
-
-            <div class="filter-card">
-              <div class="filter-header">
-                <div class="filter-header-icon">📊</div>
-                <div class="filter-header-title">Output</div>
-              </div>
-              <div class="filter-body">
-                <div class="form-group">
-                  <div class="form-label">Number of leads</div>
-                  <div class="qty-row">
-                    <input type="range" class="qty-slider" id="qty-slider" min="1" max="10" value="5" oninput="document.getElementById('qty-val').textContent=this.value">
-                    <div class="qty-val" id="qty-val">5</div>
-                  </div>
-                </div>
-                <div class="form-group">
-                  <div class="form-label">Additional context (optional)</div>
-                  <input type="text" class="form-input" id="extra-context" placeholder="e.g. Focus on travel brands launching Q3">
-                </div>
-                <button class="generate-btn" id="generate-btn" onclick="generateLeads()">
-                  <span id="btn-text">Generate Leads</span>
-                  <div class="spinner" id="btn-spinner"></div>
-                  <svg id="btn-icon" width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
-                    <circle cx="7" cy="7" r="5"/><path d="M12 12l2 2"/>
-                  </svg>
-                </button>
-              </div>
-            </div>
-          </div>
-
-          <!-- RESULTS -->
-          <div class="results-col">
-            <div id="results-header" style="display:none">
-              <div class="results-meta">
-                <div class="results-title" id="results-title">Results</div>
-                <div class="results-badges" id="results-badges"></div>
-              </div>
-              <div class="stat-row" id="stat-row" style="margin-bottom:16px"></div>
-              <div class="legend-row">
-                <div class="legend-item"><span class="legend-dot" style="background:var(--red)"></span>Hot signal</div>
-                <div class="legend-item"><span class="legend-dot" style="background:var(--blue)"></span>Warm signal</div>
-              </div>
-              <div class="tier-legend">
-                <div class="tier-legend-item"><div class="tier-ball ct1">1</div>Primary — first outreach</div>
-                <div class="tier-legend-item"><div class="tier-ball ct2">2</div>Secondary — 4 days no reply</div>
-                <div class="tier-legend-item"><div class="tier-ball ct3" style="border:1px solid var(--border)">3</div>Escalation — 2 weeks no reply</div>
-              </div>
-            </div>
-
-            <div class="loading-state" id="loading-state">
-              <div class="loading-ring"></div>
-              <div class="loading-text" id="loading-text">Scanning for signals...</div>
-              <div class="loading-sub" id="loading-sub">Verifying contacts and building lead cards</div>
-            </div>
-
-            <div id="empty-state">
-              <div class="empty-state">
-                <div class="empty-icon">🎯</div>
-                <div class="empty-title">No leads generated yet</div>
-                <div class="empty-sub">Select your filters on the left and click Generate Leads to get started. The engine will verify contacts in real time.</div>
-              </div>
-            </div>
-
-            <div id="leads-output"></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- DAILY BRIEF PANEL -->
-      <div class="panel" id="panel-brief">
-        <div class="brief-grid">
-          <div class="brief-card">
-            <div class="brief-card-title">
-              <span class="brief-dot" style="background:var(--red);box-shadow:0 0 6px var(--red)"></span>
-              Hot signals today
-            </div>
-            <div class="signal-item">
-              <div class="signal-icon">🏆</div>
-              <div>
-                <div class="signal-company">Omnicom / OMD Singapore</div>
-                <div class="signal-news">Secured IBM global media mandate — adding to Dyson and Under Armour APAC this week.</div>
-              </div>
-              <span class="signal-tag sig-hot">HOT</span>
-            </div>
-            <div class="signal-item">
-              <div class="signal-icon">👔</div>
-              <div>
-                <div class="signal-company">Dentsu Global</div>
-                <div class="signal-news">New CEO Takeshi Sano effective March 27, 2026. Capability review cycle open across all hubs.</div>
-              </div>
-              <span class="signal-tag sig-hot">HOT</span>
-            </div>
-            <div class="signal-item">
-              <div class="signal-icon">📢</div>
-              <div>
-                <div class="signal-company">IPG Mediabrands / Initiative</div>
-                <div class="signal-news">Initiative named Media Agency of the Year — Campaign US Awards 2026.</div>
-              </div>
-              <span class="signal-tag sig-hot">HOT</span>
-            </div>
-          </div>
-
-          <div class="brief-card">
-            <div class="brief-card-title">
-              <span class="brief-dot" style="background:var(--blue);box-shadow:0 0 6px var(--blue)"></span>
-              Warm signals
-            </div>
-            <div class="signal-item">
-              <div class="signal-icon">🤖</div>
-              <div>
-                <div class="signal-company">Havas Media Singapore</div>
-                <div class="signal-news">Zoheb Gafoor at TikTok Partner Summit 2026 + Hoppr CTV event. Active channel evaluation mode.</div>
-              </div>
-              <span class="signal-tag sig-warm">WARM</span>
-            </div>
-            <div class="signal-item">
-              <div class="signal-icon">📈</div>
-              <div>
-                <div class="signal-company">Publicis Media Singapore</div>
-                <div class="signal-news">Ian Loon posted "offline is the new luxury" — direct audio hook. #1 new business SG 2025.</div>
-              </div>
-              <span class="signal-tag sig-warm">WARM</span>
-            </div>
-            <div class="signal-item">
-              <div class="signal-icon">🔗</div>
-              <div>
-                <div class="signal-company">IPG / Omnicom integration</div>
-                <div class="signal-news">Integration standardising channel mix — differentiation window open across all IPG agencies.</div>
-              </div>
-              <span class="signal-tag sig-warm">WARM</span>
-            </div>
-          </div>
-        </div>
-
-        <div class="brief-card">
-          <div class="brief-card-title">
-            <span class="brief-dot" style="background:var(--amber);box-shadow:0 0 6px var(--amber)"></span>
-            Follow-ups due today
-          </div>
-          <div class="fu-item">
-            <div class="fu-days">+4</div>
-            <div>
-              <div class="fu-name">Adamson Alagan</div>
-              <div class="fu-company">General Manager · OMD Singapore</div>
-            </div>
-            <button class="fu-action" onclick="generateFU('Adamson Alagan', 'OMD Singapore', 1)">Generate FU1</button>
-          </div>
-          <div class="fu-item">
-            <div class="fu-days">+4</div>
-            <div>
-              <div class="fu-name">Zoheb Gafoor</div>
-              <div class="fu-company">GM Digital SEA · Havas Media</div>
-            </div>
-            <button class="fu-action" onclick="generateFU('Zoheb Gafoor', 'Havas Media Singapore', 1)">Generate FU1</button>
-          </div>
-          <div class="fu-item">
-            <div class="fu-days">+9</div>
-            <div>
-              <div class="fu-name">Zachary Lim</div>
-              <div class="fu-company">Head of Singapore · IPG Mediabrands</div>
-            </div>
-            <button class="fu-action" onclick="generateFU('Zachary Lim', 'IPG Mediabrands', 2)">Generate FU2</button>
-          </div>
-        </div>
-      </div>
-
-      <!-- FOLLOW-UP PANEL -->
-      <div class="panel" id="panel-followup">
-        <div class="filter-card" style="max-width:600px;margin-bottom:20px">
-          <div class="filter-header">
-            <div class="filter-header-icon">✉️</div>
-            <div class="filter-header-title">Generate Follow-up Sequence</div>
-          </div>
-          <div class="filter-body">
-            <div class="form-group">
-              <div class="form-label">Prospect name</div>
-              <input type="text" class="form-input" id="fu-name" placeholder="e.g. Adamson Alagan">
-            </div>
-            <div class="form-group">
-              <div class="form-label">Company & role</div>
-              <input type="text" class="form-input" id="fu-company" placeholder="e.g. General Manager, OMD Singapore">
-            </div>
-            <div class="form-group">
-              <div class="form-label">Initial email sent (paste subject or summary)</div>
-              <input type="text" class="form-input" id="fu-initial" placeholder="e.g. Sent Version A — Under Armour APAC angle">
-            </div>
-            <div class="form-group">
-              <div class="form-label">Follow-up number</div>
-              <select class="form-select" id="fu-num-select">
-                <option value="1">FU1 — Day 4</option>
-                <option value="2">FU2 — Day 9</option>
-                <option value="3">FU3 — Day 15</option>
-                <option value="4">FU4 — Day 22</option>
-                <option value="5">FU5 — Day 30 (soft close)</option>
-              </select>
-            </div>
-            <button class="generate-btn" onclick="generateFollowUp()">
-              <span>Generate Follow-up</span>
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M2 8h12M9 3l5 5-5 5"/>
-              </svg>
-            </button>
-          </div>
-        </div>
-        <div id="fu-output"></div>
-      </div>
-
-      <!-- PIPELINE PANEL -->
-      <div class="panel" id="panel-pipeline">
-        <div class="pipeline-grid">
-          <div class="pipeline-col">
-            <div class="pipeline-col-header">
-              <div class="pipeline-col-title">Contacted</div>
-              <div class="pipeline-count">22</div>
-            </div>
-            <div class="pipeline-items">
-              <div class="pipeline-item">
-                <div class="pi-name">Adamson Alagan</div>
-                <div class="pi-company">OMD Singapore</div>
-                <div class="pi-date">Sent Apr 20</div>
-              </div>
-              <div class="pipeline-item">
-                <div class="pi-name">Zoheb Gafoor</div>
-                <div class="pi-company">Havas Media SG</div>
-                <div class="pi-date">Sent Apr 20</div>
-              </div>
-              <div class="pipeline-item">
-                <div class="pi-name">Elaine Poh</div>
-                <div class="pi-company">Publicis Media SG</div>
-                <div class="pi-date">Sent Apr 21</div>
-              </div>
-              <div class="pipeline-item">
-                <div class="pi-name">Rahul Thappa</div>
-                <div class="pi-company">Dentsu Singapore</div>
-                <div class="pi-date">Sent Apr 21</div>
-              </div>
-              <div class="pipeline-item">
-                <div class="pi-name">Zachary Lim</div>
-                <div class="pi-company">IPG Mediabrands SG</div>
-                <div class="pi-date">Sent Apr 22</div>
-              </div>
-            </div>
-          </div>
-          <div class="pipeline-col">
-            <div class="pipeline-col-header">
-              <div class="pipeline-col-title">Follow-up</div>
-              <div class="pipeline-count">8</div>
-            </div>
-            <div class="pipeline-items">
-              <div class="pipeline-item">
-                <div class="pi-name">Jourdan Tan</div>
-                <div class="pi-company">OMG Singapore</div>
-                <div class="pi-date">FU1 due · Day 4</div>
-              </div>
-              <div class="pipeline-item">
-                <div class="pi-name">Jean Lee</div>
-                <div class="pi-company">Havas Media SG</div>
-                <div class="pi-date">FU1 due · Day 4</div>
-              </div>
-              <div class="pipeline-item">
-                <div class="pi-name">Ian Loon</div>
-                <div class="pi-company">Publicis Groupe</div>
-                <div class="pi-date">FU1 due · Day 4</div>
-              </div>
-            </div>
-          </div>
-          <div class="pipeline-col">
-            <div class="pipeline-col-header">
-              <div class="pipeline-col-title">Replied</div>
-              <div class="pipeline-count">2</div>
-            </div>
-            <div class="pipeline-items">
-              <div class="pipeline-item">
-                <div class="pi-name">Pankaj Nayak</div>
-                <div class="pi-company">Havas Media SG</div>
-                <div class="pi-date">Replied Apr 23</div>
-              </div>
-            </div>
-          </div>
-          <div class="pipeline-col">
-            <div class="pipeline-col-header">
-              <div class="pipeline-col-title">Call booked</div>
-              <div class="pipeline-count">0</div>
-            </div>
-            <div class="pipeline-items">
-              <div style="padding:20px 10px;text-align:center;color:var(--text3);font-size:12px">
-                First discovery call target: this week
-              </div>
-            </div>
-          </div>
-          <div class="pipeline-col">
-            <div class="pipeline-col-header">
-              <div class="pipeline-col-title">Closed / Paused</div>
-              <div class="pipeline-count">1</div>
-            </div>
-            <div class="pipeline-items">
-              <div class="pipeline-item">
-                <div class="pi-name">No interest</div>
-                <div class="pi-company">— — —</div>
-                <div class="pi-date">Paused</div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
+      <div class="fu-out" id="fu-out"></div>
     </div>
-  </main>
-</div>
 
-<!-- TOAST -->
-<div class="toast" id="toast">
-  <div class="toast-dot"></div>
-  <span id="toast-text">Copied to clipboard</span>
-</div>
+    <!-- ═══════════ PIPELINE ═══════════ -->
+    <div class="panel" id="panel-pipeline">
+      <div class="pipe-grid">
+        <div class="pipe-col">
+          <div class="pipe-col-head"><div class="pipe-col-title">Contacted</div><div class="pipe-count">22</div></div>
+          <div class="pipe-items">
+            <div class="pipe-item"><div class="pi-name">Adamson Alagan</div><div class="pi-co">OMD Singapore</div><div class="pi-date">Sent Apr 20</div></div>
+            <div class="pipe-item"><div class="pi-name">Zoheb Gafoor</div><div class="pi-co">Havas Media SG</div><div class="pi-date">Sent Apr 20</div></div>
+            <div class="pipe-item"><div class="pi-name">Elaine Poh</div><div class="pi-co">Publicis Media SG</div><div class="pi-date">Sent Apr 21</div></div>
+            <div class="pipe-item"><div class="pi-name">Rahul Thappa</div><div class="pi-co">Dentsu Singapore</div><div class="pi-date">Sent Apr 21</div></div>
+            <div class="pipe-item"><div class="pi-name">Zachary Lim</div><div class="pi-co">IPG Mediabrands SG</div><div class="pi-date">Sent Apr 22</div></div>
+          </div>
+        </div>
+        <div class="pipe-col">
+          <div class="pipe-col-head"><div class="pipe-col-title">Follow-up</div><div class="pipe-count">8</div></div>
+          <div class="pipe-items">
+            <div class="pipe-item"><div class="pi-name">Jourdan Tan</div><div class="pi-co">OMG Singapore</div><div class="pi-date">FU1 due · Day 4</div></div>
+            <div class="pipe-item"><div class="pi-name">Jean Lee</div><div class="pi-co">Havas Media SG</div><div class="pi-date">FU1 due · Day 4</div></div>
+            <div class="pipe-item"><div class="pi-name">Ian Loon</div><div class="pi-co">Publicis Groupe</div><div class="pi-date">FU1 due · Day 4</div></div>
+          </div>
+        </div>
+        <div class="pipe-col">
+          <div class="pipe-col-head"><div class="pipe-col-title">Replied</div><div class="pipe-count">2</div></div>
+          <div class="pipe-items">
+            <div class="pipe-item"><div class="pi-name">Pankaj Nayak</div><div class="pi-co">Havas Media SG</div><div class="pi-date">Replied Apr 23</div></div>
+          </div>
+        </div>
+        <div class="pipe-col">
+          <div class="pipe-col-head"><div class="pipe-col-title">Call booked</div><div class="pipe-count">0</div></div>
+          <div class="pipe-items"><div style="padding:20px 10px;text-align:center;color:var(--text3);font-size:12px;line-height:1.6">First discovery call<br>target: this week</div></div>
+        </div>
+        <div class="pipe-col">
+          <div class="pipe-col-head"><div class="pipe-col-title">Closed / Paused</div><div class="pipe-count">1</div></div>
+          <div class="pipe-items">
+            <div class="pipe-item"><div class="pi-name">No interest</div><div class="pi-co">Paused</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /content -->
+</main>
+</div><!-- /app -->
+
+<div class="toast" id="toast"><div class="toast-dot"></div><span id="toast-msg">Done</span></div>
 
 <script>
-// ── STATE ──
-let apiKey = localStorage.getItem('na_api_key') || '';
-let generatedLeads = [];
-let loadingMsgs = [];
-let loadingInterval;
+// ─── CONFIG ─────────────────────────────────────────────────────────────────
+// To embed a shared company API key, replace '' with 'sk-ant-...'
+// If left empty, each user enters their own key — stored only in their browser.
+const SHARED_KEY = 'sk-ant-tu-key-aquí';
 
-// ── INIT ──
-window.onload = () => {
-  if (apiKey) {
-    document.getElementById('api-setup').style.display = 'none';
-    document.getElementById('api-key-input').value = apiKey;
-  }
-};
+// ─── STATE ───────────────────────────────────────────────────────────────────
+let apiKey = SHARED_KEY || localStorage.getItem('na_key') || '';
+let loadInterval;
+const AV = ['av-a','av-b','av-c','av-d','av-e'];
+const TAB_TITLES = {find:'Find Leads',brief:'Daily Brief',followup:'Follow-ups',pipeline:'Pipeline'};
 
-// ── API KEY ──
-function saveKey() {
-  const val = document.getElementById('api-key-input').value.trim();
-  if (!val.startsWith('sk-ant-')) {
-    showToast('Invalid key format — must start with sk-ant-');
-    return;
-  }
-  apiKey = val;
-  localStorage.setItem('na_api_key', val);
-  document.getElementById('api-setup').style.display = 'none';
-  showToast('API key saved. Engine activated ✓');
+// ─── INIT ────────────────────────────────────────────────────────────────────
+(function(){
+  if(apiKey) document.getElementById('key-banner').style.display = 'none';
+})();
+
+// ─── API KEY ────────────────────────────────────────────────────────────────
+function saveKey(){
+  const v = document.getElementById('key-input').value.trim();
+  if(!v){ toast('Paste your Anthropic API key first'); return; }
+  apiKey = v;
+  localStorage.setItem('na_key', v);
+  document.getElementById('key-banner').style.display = 'none';
+  toast('API key saved — engine activated ✓');
 }
 
-// ── TABS ──
-function switchTab(tab) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('panel-' + tab).classList.add('active');
-  event.currentTarget.classList.add('active');
-  const titles = { find: 'Find Leads', brief: 'Daily Brief', followup: 'Follow-ups', pipeline: 'Pipeline' };
-  document.getElementById('topbar-title').textContent = titles[tab] || 'Next Audio Engine';
+// ─── NAV ─────────────────────────────────────────────────────────────────────
+function goTab(id){
+  ['find','brief','followup','pipeline'].forEach(t => {
+    document.getElementById('panel-'+t).classList.toggle('active', t===id);
+    document.getElementById('tab-'+t).classList.toggle('active', t===id);
+    document.getElementById('nav-'+t)?.classList.toggle('active', t===id);
+  });
+  document.getElementById('topbar-title').textContent = TAB_TITLES[id] || 'Next Audio Engine';
 }
 
-function filterMarket(market) {
-  document.getElementById('filter-market').value = market;
-  switchTab('find');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  event.currentTarget.classList.add('active');
+function quickM(m){
+  document.getElementById('f-mkt').value = m;
+  goTab('find');
 }
 
-function toggleSignal(el) { el.classList.toggle('selected'); }
-
-// ── LOADING MESSAGES ──
-const loadingSequence = [
-  ['Scanning market signals...', 'Looking for buying triggers and news'],
-  ['Verifying contact roles...', 'Checking LinkedIn and press for accuracy'],
-  ['Building lead cards...', 'Scoring conversion probability'],
-  ['Drafting email versions...', 'Applying Outreach Framework 2.0'],
-  ['Applying Phase 3 intelligence...', 'Adding news triggers and A/B angles'],
+// ─── LOADING ─────────────────────────────────────────────────────────────────
+const LOAD_SEQ = [
+  ['Scanning market signals…','Looking for buying triggers and recent news'],
+  ['Verifying contacts…','Checking titles and LinkedIn accuracy for 2025-2026'],
+  ['Building lead cards…','Scoring conversion probability 0–100'],
+  ['Drafting emails…','Applying Outreach Framework 2.0 — Hook→Problem→Reframe→CTA'],
+  ['Adding Phase 3 intelligence…','News triggers, A/B versions, reference clients'],
 ];
-
-function startLoadingAnimation() {
-  let i = 0;
-  document.getElementById('loading-text').textContent = loadingSequence[0][0];
-  document.getElementById('loading-sub').textContent = loadingSequence[0][1];
-  loadingInterval = setInterval(() => {
-    i = (i + 1) % loadingSequence.length;
-    document.getElementById('loading-text').textContent = loadingSequence[i][0];
-    document.getElementById('loading-sub').textContent = loadingSequence[i][1];
-  }, 2200);
+function startLoad(){
+  let i=0; setLoad(LOAD_SEQ[0]);
+  loadInterval = setInterval(()=>{ i=(i+1)%LOAD_SEQ.length; setLoad(LOAD_SEQ[i]); }, 2400);
+}
+function stopLoad(){ clearInterval(loadInterval); }
+function setLoad([t,s]){
+  document.getElementById('load-t').textContent=t;
+  document.getElementById('load-s').textContent=s;
 }
 
-function stopLoadingAnimation() { clearInterval(loadingInterval); }
+// ─── SYSTEM PROMPT ───────────────────────────────────────────────────────────
+function sys(){
+  return `You are the Next Audio Prospecting Engine v3.2 — an AI built for the Next Audio sales team.
 
-// ── GENERATE LEADS ──
-async function generateLeads() {
-  if (!apiKey) { showToast('Please enter your API key first'); return; }
+COMPANY: Next Audio offers exclusive access to AdsWizz (natively integrated inside Amazon DSP since Q4 2025), SiriusXM (160M monthly listeners, now inside Amazon DSP), premium podcasts, and streaming radio across APAC, US, UK, LATAM, and Middle East.
 
-  const industry = document.getElementById('filter-industry').value;
-  const market = document.getElementById('filter-market').value;
-  const type = document.getElementById('filter-type').value;
-  const qty = document.getElementById('qty-slider').value;
-  const context = document.getElementById('extra-context').value;
-  const signals = [...document.querySelectorAll('.signal-chip.selected')].map(c => c.textContent).join(', ');
+KEY PITCH FACT: AdsWizz is already inside Amazon DSP — which most major agencies already use. Adding audio requires no new contract, no new tech stack. It is an inventory extension within existing infrastructure.
 
-  // UI
-  document.getElementById('generate-btn').disabled = true;
-  document.getElementById('btn-text').textContent = 'Generating...';
-  document.getElementById('btn-spinner').style.display = 'block';
-  document.getElementById('btn-icon').style.display = 'none';
-  document.getElementById('empty-state').style.display = 'none';
-  document.getElementById('leads-output').innerHTML = '';
-  document.getElementById('results-header').style.display = 'none';
-  const ls = document.getElementById('loading-state');
-  ls.style.display = 'flex';
-  startLoadingAnimation();
+REFERENCE CLIENTS (pick the 2 most relevant for each prospect):
+- ProColombia: +24 points brand consideration
+- Emirates: premium APAC audience at scale
+- Qatar Airways: premium travel audience APAC
+- Dubai Tourism: regional awareness via premium audio
+- VISA: high-intent financial audience APAC
+- Capital.com: 34% lower CPM vs paid social; fintech precision
+- Saxo Bank: B2B financial audience via podcast targeting
 
-  const prompt = buildLeadPrompt(industry, market, type, qty, signals, context);
+CONTACT IQ — NON-NEGOTIABLE:
+FOR MEDIA AGENCIES:
+- T1 Primary (FIRST contact, highest response rate): Business Director / Programmatic Director / Trading Director / Head of Programmatic / GM Digital / Biddable Director. NEVER a CEO or MD as first contact.
+- T2 Secondary (follow-up 4 days after T1): Head of Digital / Digital Director / MD
+- T3 Escalation (only after 2 failed follow-ups): CEO / President / CCO
+FOR BRANDS:
+- T1: Head of Paid Media / Digital Media Director / Performance Marketing Manager
+- T2: Head of Digital Marketing / VP Digital
+- T3: CMO / VP Marketing
 
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 8000,
-        system: getSystemPrompt(),
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-
-    const data = await resp.json();
-
-    if (data.error) { throw new Error(data.error.message); }
-
-    const text = data.content[0].text;
-    let leads = [];
-    try {
-      const match = text.match(/```json\n?([\s\S]*?)\n?```/);
-      leads = match ? JSON.parse(match[1]) : JSON.parse(text);
-    } catch(e) {
-      leads = parseLeadsFallback(text);
-    }
-
-    stopLoadingAnimation();
-    ls.style.display = 'none';
-    renderLeads(leads, industry, market, qty);
-
-  } catch(err) {
-    stopLoadingAnimation();
-    ls.style.display = 'none';
-    document.getElementById('empty-state').style.display = 'block';
-    document.getElementById('leads-output').innerHTML = `<div style="padding:20px;background:var(--red-bg);border:1px solid rgba(239,68,68,0.2);border-radius:var(--radius);color:#fca5a5;font-size:13px">Error: ${err.message}</div>`;
-    showToast('Error generating leads — check your API key');
-  }
-
-  document.getElementById('generate-btn').disabled = false;
-  document.getElementById('btn-text').textContent = 'Generate Leads';
-  document.getElementById('btn-spinner').style.display = 'none';
-  document.getElementById('btn-icon').style.display = 'block';
-}
-
-// ── SYSTEM PROMPT ──
-function getSystemPrompt() {
-  return `You are the Next Audio Prospecting Engine v3.2 — an AI built for Santiago at Next Audio, a premium audio advertising company.
-
-NEXT AUDIO OFFERS: Exclusive access to AdsWizz (natively inside Amazon DSP since Q4 2025), SiriusXM (160M monthly listeners), premium podcasts, and streaming radio across APAC, US, UK, LATAM, and Middle East.
-
-KEY PITCH FACT: AdsWizz is already inside Amazon DSP — which most major agencies already use. Adding audio requires no new contract, no new tech stack. It's an inventory extension within existing infrastructure.
-
-REFERENCE CLIENTS: ProColombia (+24pts brand consideration), Emirates, Qatar Airways, Dubai Tourism, VISA, Capital.com (34% lower CPM vs social), Saxo Bank.
-
-CONTACT IQ HIERARCHY — NON-NEGOTIABLE:
-FOR MEDIA AGENCIES: T1=Business Director/Programmatic Director/Trading Director/GM Digital (FIRST contact, highest response rate). T2=Head of Digital/MD (follow-up). T3=CEO/President (escalation only after 2 failed follow-ups). NEVER lead with CEO.
-FOR BRANDS: T1=Head of Paid Media/Digital Media Director/Performance Marketing Manager. T2=Head of Digital Marketing/VP Digital. T3=CMO/VP Marketing.
-
-OUTREACH FRAMEWORK 2.0: Hook→Problem→Reframe→Solution→Proof→Growth→CTA. Max 90-120 words. CTA always "Would 15 minutes be worthwhile?" Never use "Hope you're well" or "Touching base". Frame audio as missing inventory layer in existing infrastructure, not a "new" channel.
+OUTREACH FRAMEWORK 2.0 — every email must follow:
+Hook → Problem → Reframe → Solution → Proof → Growth → CTA
+- Max 90–120 words per email body
+- CTA: "Would 15 minutes be worthwhile?"
+- NEVER: "Hope you're well" / "Just following up" / "Touching base" / "Circling back"
+- Frame audio as MISSING INVENTORY LAYER in existing infrastructure — never a "new" channel
+- Subject lines must be specific and contextual — NEVER generic
 
 TONE BY MARKET: LATAM=warm/relational/Spanish. USA/CA=direct/ROI. UK=intelligent/no oversell. Middle East=formal/prestige. Europe=methodical/data. APAC=respectful/long-term.
 
-PHASE 3 MODULES (always include):
-- news_trigger: Real company news, state outlet + date. Never fabricate.
-- ab_versions: Two different email angles for Tier 1 (not just different wording — different strategic angles).
-- smart_reference: 2 most relevant Next Audio clients for this sector.
+PERMANENTLY DISCARDED — NEVER include:
+- Janelle Vila (now at Apple, not OMD)
+- Deanson Lee (now at Ebiquity plc, not Havas)
+- Jeff Franco (now at Publicis Groupe, not Initiative)
+- Leigh Terry (left IPG Mediabrands December 2025)
 
-PERMANENTLY DISCARDED: Janelle Vila (now Apple), Deanson Lee (now Ebiquity), Jeff Franco (now Publicis Groupe), Leigh Terry (left IPG Dec 2025).
+SCORING: base 50. Add: +15 new leadership last 6 months; +12 active campaign needing differentiation; +10 competitor in audio; +10 merger/integration; +8 Q2/Q3 budget open; +7 paid social saturation; +5 market expansion. Min score to include: 65.
 
-SCORING: 0-100. Consider: recency of buying signals, leadership changes (last 6 months = +15pts), active campaigns = +10pts, competitor in audio = +8pts, integration/merger = +10pts, Q2/Q3 budget = +7pts.
-
-RESPOND ONLY WITH A JSON ARRAY. No markdown text outside the JSON block. Each lead object must have these exact fields:
+OUTPUT: respond ONLY with a valid JSON array. No text before or after. Each object:
 {
-  "company": "Company name",
+  "company": "Real company name",
   "industry": "Industry",
   "market": "Market",
-  "clients": "Key clients comma separated",
+  "clients": "Key clients, comma separated",
   "score": 85,
-  "score_note": "One line justification",
-  "why_now": "Specific real context paragraph",
-  "news_trigger_label": "Source + date",
-  "news_trigger": "Real news text",
-  "signals_hot": ["signal1", "signal2"],
-  "signals_warm": ["signal1"],
-  "pitch_problem": "Problem sentence",
-  "pitch_reframe": "Reframe sentence",
-  "pitch_opportunity": "Opportunity sentence",
-  "references": ["Client1", "Client2"],
+  "score_note": "One-line reason",
+  "why_now": "2-3 sentences specific real context",
+  "news_label": "Source · Date",
+  "news": "Real news text",
+  "hot": ["Hot signal 1"],
+  "warm": ["Warm signal 1"],
+  "problem": "Problem for pitch",
+  "reframe": "Reframe sentence",
+  "opportunity": "Opportunity sentence",
+  "refs": ["Client 1", "Client 2"],
   "contacts": [
     {
-      "initials": "AA",
+      "init": "AA",
       "name": "Full Name",
       "title": "Exact title",
-      "linkedin": "linkedin.com/in/slug",
-      "verified": "Verified · Since date",
+      "li": "linkedin.com/in/slug",
+      "verified": "Verified · Role confirmed MMM YYYY",
       "tier": 1,
-      "email_a_subject": "Subject line A",
-      "email_a_body": "Full email body A",
-      "email_b_subject": "Subject line B",
-      "email_b_body": "Full email body B"
+      "sa": "Subject line Version A",
+      "ba": "Email body Version A (90-120 words)",
+      "sb": "Subject line Version B (different angle)",
+      "bb": "Email body Version B (90-120 words)"
     }
   ]
 }
-
-For Tier 2 contacts: include only email_a_subject and email_a_body (single email, no B version).
-For Tier 3: include only email_a_subject and email_a_body labeled as escalation.
-Always include 3 contacts per lead (T1, T2, T3) when possible. If a contact needs LinkedIn lookup, set linkedin to "needs-lookup" and verified to "Requires LinkedIn Sales Navigator lookup".`;
+T1: include sa, ba, sb, bb. T2 and T3: include only sa and ba.
+Try to always include 3 contacts (T1, T2, T3) per lead.
+If LinkedIn is unknown, set li to "needs-lookup".`;
 }
 
-// ── BUILD PROMPT ──
-function buildLeadPrompt(industry, market, type, qty, signals, context) {
-  const industryMap = {
-    media_agency: 'media agencies (programmatic, digital, holding companies)',
-    travel_airlines: 'travel and airlines',
-    fintech_banking: 'fintech and banking',
-    ecommerce_retail: 'e-commerce and retail',
-    telecom: 'telecommunications',
-    automotive: 'automotive',
-    luxury_fashion: 'luxury and fashion',
-    fmcg: 'FMCG (fast-moving consumer goods)',
-    tech_saas: 'tech and SaaS',
-    gaming: 'gaming and betting',
-    real_estate: 'real estate',
-    health_pharma: 'health and pharma',
+// ─── USER PROMPT ─────────────────────────────────────────────────────────────
+function buildPrompt(){
+  const iMap = {
+    media_agency:'media agencies (programmatic, digital, holding companies)',
+    travel_airlines:'travel and airlines', fintech_banking:'fintech and banking',
+    ecommerce_retail:'e-commerce and retail', telecom:'telecommunications',
+    automotive:'automotive', luxury_fashion:'luxury and fashion', fmcg:'FMCG',
+    tech_saas:'tech and SaaS', gaming:'gaming and betting', health_pharma:'health and pharma'
   };
-
-  const marketMap = {
-    singapore: 'Singapore',
-    apac: 'APAC (focus on key markets)',
-    uae: 'UAE and Middle East',
-    ksa: 'Saudi Arabia',
-    uk: 'United Kingdom',
-    usa: 'USA and Canada',
-    latam: 'Latin America',
-    europe: 'Europe',
-    india: 'India',
+  const mMap = {
+    singapore:'Singapore', apac:'APAC', uae:'UAE and Middle East', ksa:'Saudi Arabia',
+    uk:'United Kingdom', usa:'USA and Canada', latam:'Latin America', europe:'Europe', india:'India'
   };
-
+  const ind = document.getElementById('f-ind').value;
+  const mkt = document.getElementById('f-mkt').value;
+  const typ = document.getElementById('f-type').value;
+  const qty = document.getElementById('qty').value;
+  const ctx = document.getElementById('f-ctx').value.trim();
+  const sigs = [...document.querySelectorAll('.chip.on')].map(c=>c.textContent).join(', ');
   return `Generate ${qty} high-quality audio advertising prospects for Next Audio.
 
 FILTERS:
-- Industry: ${industryMap[industry] || 'all industries (pick highest-fit)'}
-- Market: ${marketMap[market] || 'global (pick highest-opportunity markets)'}
-- Company type: ${type === 'agency' ? 'media agencies only' : type === 'brand' ? 'brands/advertisers only' : 'any'}
-- Priority buying signals: ${signals || 'all signals'}
-${context ? `- Additional context: ${context}` : ''}
+- Industry: ${iMap[ind]||'all industries — pick highest audio fit'}
+- Market: ${mMap[mkt]||'global — pick highest opportunity markets right now'}
+- Company type: ${typ==='agency'?'media agencies only':typ==='brand'?'brands/advertisers only':'any'}
+- Priority buying signals: ${sigs||'all signals'}${ctx?'\n- Additional context: '+ctx:''}
 
 REQUIREMENTS:
-- Only real, existing companies
-- Minimum score of 65
+- Only real, existing companies — never fictional
+- Minimum score 65
 - At least 2 hot buying signals per lead
-- Each lead must have 3 contacts (T1 Primary, T2 Secondary, T3 Escalation)
-- Verify that contacts actually work at these companies in 2025-2026
-- Email bodies must be 90-120 words max, ready to send
-- Apply Outreach Framework 2.0: Hook→Problem→Reframe→Solution→Proof→Growth→CTA
-- Subject lines must be specific and contextual — never generic
+- 3 contacts per lead when possible (T1, T2, T3)
+- Contacts verified in their roles 2025–2026
+- Email bodies 90–120 words, ready to send today
+- Subject lines specific and contextual
 
-Return ONLY a JSON array. No text before or after.`;
+Respond with a JSON array ONLY — no text before or after.`;
 }
 
-// ── FALLBACK PARSER ──
-function parseLeadsFallback(text) {
-  try {
-    const start = text.indexOf('[');
-    const end = text.lastIndexOf(']') + 1;
-    if (start !== -1 && end > start) return JSON.parse(text.slice(start, end));
-  } catch(e) {}
-  return [];
-}
-
-// ── RENDER LEADS ──
-const avClasses = ['av-a', 'av-b', 'av-c', 'av-d', 'av-e'];
-
-function renderLeads(leads, industry, market, qty) {
-  if (!leads || leads.length === 0) {
-    document.getElementById('empty-state').style.display = 'block';
-    return;
+// ─── API CALL ────────────────────────────────────────────────────────────────
+async function callAPI(system, user, maxTok){
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'x-api-key': apiKey,
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true'
+    },
+    body: JSON.stringify({
+      model: 'claude-sonnet-4-20250514',
+      max_tokens: maxTok,
+      system: system,
+      messages: [{ role: 'user', content: user }]
+    })
+  });
+  if(!resp.ok){
+    let msg = `HTTP ${resp.status}`;
+    try { const e = await resp.json(); msg = e?.error?.message || msg; } catch(_){}
+    throw new Error(msg);
   }
-
-  generatedLeads = leads;
-  const out = document.getElementById('leads-output');
-  const header = document.getElementById('results-header');
-  const statRow = document.getElementById('stat-row');
-  const badges = document.getElementById('results-badges');
-  const title = document.getElementById('results-title');
-
-  const totalContacts = leads.reduce((s, l) => s + (l.contacts?.length || 0), 0);
-  const totalEmails = leads.reduce((s, l) => s + (l.contacts?.filter(c => c.tier === 1).length * 2 || 0) + (l.contacts?.filter(c => c.tier > 1).length || 0), 0);
-
-  title.textContent = `${leads.length} leads — ${market || 'Global'} · ${industry || 'All industries'}`;
-
-  badges.innerHTML = `
-    <span class="rbadge rb-green">F3 active</span>
-    <span class="rbadge rb-amber">Emails inline</span>
-    <span class="rbadge rb-blue">${leads.length} leads generated</span>
-  `;
-
-  statRow.innerHTML = `
-    <div class="stat-box"><div class="stat-n">${leads.length}</div><div class="stat-l">Companies</div></div>
-    <div class="stat-box"><div class="stat-n">${totalContacts}</div><div class="stat-l">Contacts</div></div>
-    <div class="stat-box"><div class="stat-n">${totalEmails}</div><div class="stat-l">Emails drafted</div></div>
-    <div class="stat-box"><div class="stat-n">${leads.filter(l=>l.contacts?.some(c=>c.tier===1)).length * 2}</div><div class="stat-l">A/B versions</div></div>
-  `;
-
-  header.style.display = 'block';
-
-  out.innerHTML = leads.map((lead, i) => renderLeadCard(lead, i)).join('');
+  return resp.json();
 }
 
-function renderLeadCard(lead, i) {
-  const avClass = avClasses[i % avClasses.length];
-  const isHigh = lead.score >= 75;
-  const scoreClass = isHigh ? 'score-high' : 'score-mid';
-  const fillClass = isHigh ? 'score-fill-h' : 'score-fill-m';
-
-  const contactsHtml = (lead.contacts || []).map(c => renderContactBlock(c, lead)).join('');
-
-  return `
-  <div class="lead-card" style="margin-bottom:16px">
-    <div class="lead-head">
-      <div class="lead-av ${avClass}">${(lead.company || '??').slice(0,3).toUpperCase()}</div>
-      <div class="lead-info">
-        <div class="lead-company">${lead.company}</div>
-        <div class="lead-sub">${lead.industry} · ${lead.market} · ${lead.clients || ''}</div>
-      </div>
-      <div class="lead-score">
-        <div class="score-num ${scoreClass}">${lead.score}</div>
-        <div class="score-bar"><div class="${fillClass}" style="width:${lead.score}%"></div></div>
-        <div class="score-note">${lead.score_note || ''}</div>
-      </div>
-    </div>
-    <div class="lead-body">
-      <div>
-        <div class="section-lbl">Why now</div>
-        <div class="now-box">${lead.why_now || ''}</div>
-      </div>
-      <div class="trigger-box">
-        <div class="trigger-lbl">F3 · News trigger — ${lead.news_trigger_label || ''}</div>
-        <div class="trigger-txt">${lead.news_trigger || ''}</div>
-      </div>
-      <div>
-        <div class="section-lbl">Buying signals</div>
-        <div class="sigs">
-          ${(lead.signals_hot || []).map(s => `<span class="sig sig-hot">${s}</span>`).join('')}
-          ${(lead.signals_warm || []).map(s => `<span class="sig sig-warm">${s}</span>`).join('')}
-        </div>
-      </div>
-      <div>
-        <div class="section-lbl">Pitch angle</div>
-        <div class="pitch-box">
-          <div class="pitch-row"><span class="pitch-tag pt-p">Problem</span><span class="pitch-txt">${lead.pitch_problem || ''}</span></div>
-          <div class="pitch-row"><span class="pitch-tag pt-r">Reframe</span><span class="pitch-txt">${lead.pitch_reframe || ''}</span></div>
-          <div class="pitch-row"><span class="pitch-tag pt-o">Opportunity</span><span class="pitch-txt">${lead.pitch_opportunity || ''}</span></div>
-        </div>
-      </div>
-      <div>
-        <div class="section-lbl">Reference clients</div>
-        <div class="refs">${(lead.references || []).map(r => `<span class="ref-pill">${r}</span>`).join('')}</div>
-      </div>
-      <div>
-        <div class="section-lbl">Contacts + emails</div>
-        ${contactsHtml}
-      </div>
-    </div>
-  </div>`;
+// ─── PARSE JSON ──────────────────────────────────────────────────────────────
+function parseJ(text){
+  try { return JSON.parse(text); } catch(_){}
+  const m = text.match(/```(?:json)?\s*([\s\S]*?)```/);
+  if(m) try { return JSON.parse(m[1]); } catch(_){}
+  const s = text.indexOf('['), e = text.lastIndexOf(']');
+  if(s!==-1 && e>s) try { return JSON.parse(text.slice(s,e+1)); } catch(_){}
+  return null;
 }
 
-function renderContactBlock(c, lead) {
-  const tierClass = c.tier === 1 ? 'ct1' : c.tier === 2 ? 'ct2' : 'ct3';
-  const tierBadge = c.tier === 1 ? 't1b' : c.tier === 2 ? 't2b' : 't3b';
-  const tierLabel = c.tier === 1 ? 'Tier 1 · Primary' : c.tier === 2 ? 'Tier 2 · Secondary' : 'Tier 3 · Escalation';
-  const liLink = c.linkedin && c.linkedin !== 'needs-lookup'
-    ? `<a class="c-link" href="https://${c.linkedin}" target="_blank">${c.linkedin} ↗</a>`
-    : `<span class="c-link v-need">Needs LinkedIn Sales Navigator lookup</span>`;
-  const verifiedClass = c.verified && c.verified.includes('lookup') ? 'v-need' : 'v-ok';
-
-  const emailAId = `email-${Math.random().toString(36).slice(2)}`;
-  const emailBId = `email-${Math.random().toString(36).slice(2)}`;
-
-  let emailsHtml = `
-    <div style="margin-bottom:10px">
-      <span class="ver-a">Version A</span>
-      <div class="email-subj">${c.email_a_subject || ''}</div>
-      <div class="email-body-box" id="${emailAId}">${c.email_a_body || ''}</div>
-      <button class="copy-email-btn" onclick="copyEmail('${emailAId}')">Copy email A</button>
-    </div>`;
-
-  if (c.email_b_subject && c.tier === 1) {
-    emailsHtml += `
-    <div>
-      <span class="ver-b">Version B</span>
-      <div class="email-subj">${c.email_b_subject || ''}</div>
-      <div class="email-body-box" id="${emailBId}">${c.email_b_body || ''}</div>
-      <button class="copy-email-btn" onclick="copyEmail('${emailBId}')">Copy email B</button>
-    </div>`;
-  }
-
-  return `
-  <div class="contact-block">
-    <div class="contact-header">
-      <div class="c-av ${tierClass}">${c.initials || c.name?.slice(0,2).toUpperCase() || '??'}</div>
-      <div style="flex:1;min-width:0">
-        <div class="c-name">${c.name}</div>
-        <div class="c-title">${c.title}</div>
-      </div>
-      <span class="c-tier ${tierBadge}">${tierLabel}</span>
-    </div>
-    <div class="c-links">
-      ${liLink}
-      <span class="c-link ${verifiedClass}">${c.verified || 'Verify role'}</span>
-    </div>
-    <hr class="contact-divider">
-    <div class="email-section">${emailsHtml}</div>
-  </div>`;
-}
-
-// ── FOLLOW-UP ──
-async function generateFU(name, company, fuNum) {
-  if (name) document.getElementById('fu-name').value = name;
-  if (company) document.getElementById('fu-company').value = company;
-  if (fuNum) document.getElementById('fu-num-select').value = fuNum;
-  switchTab('followup');
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  await generateFollowUp();
-}
-
-async function generateFollowUp() {
-  if (!apiKey) { showToast('Please enter your API key first'); return; }
-
-  const name = document.getElementById('fu-name').value.trim();
-  const company = document.getElementById('fu-company').value.trim();
-  const initial = document.getElementById('fu-initial').value.trim();
-  const fuNum = document.getElementById('fu-num-select').value;
-
-  if (!name || !company) { showToast('Enter prospect name and company first'); return; }
-
-  const out = document.getElementById('fu-output');
-  out.innerHTML = `<div class="loading-state" style="display:flex"><div class="loading-ring"></div><div><div class="loading-text">Drafting follow-up ${fuNum}...</div><div class="loading-sub">New angle, different from previous emails</div></div></div>`;
-
-  const dayMap = { 1: 'Day 4', 2: 'Day 9', 3: 'Day 15', 4: 'Day 22', 5: 'Day 30' };
-  const angleMap = {
-    1: 'specific client use case (one of their key clients + audio)',
-    2: 'technical angle (Amazon DSP, AdsWizz integration, cookieless, data signal)',
-    3: 'unexpected lateral angle (awards, AI training data, CTV comparison, brand safety, MFA)',
-    4: 'urgency or competitive intelligence (window closing, competitor evaluation)',
-    5: 'soft close — leave door open, no pressure, short, warm'
-  };
-
-  const prompt = `Generate a follow-up email for Next Audio's audio advertising offering.
-
-PROSPECT: ${name} at ${company}
-FOLLOW-UP NUMBER: ${fuNum} (${dayMap[fuNum]})
-INITIAL EMAIL SENT: ${initial || 'Standard Next Audio intro email about programmatic audio via AdsWizz in Amazon DSP'}
-REQUIRED ANGLE: ${angleMap[fuNum]}
-
-RULES:
-- MUST use a completely new angle — never repeat information from the initial email
-- Max 80 words
-- Apply Outreach Framework 2.0: Hook→Reframe→CTA
-- CTA: "Would 15 minutes be worthwhile?" or equivalent soft ask
-- Never use "Hope you're well", "Just following up", "Touching base", "Circling back"
-- Subject must reference the new angle specifically
-- Use real Next Audio reference clients when relevant (ProColombia, Emirates, Qatar Airways, Dubai Tourism, VISA, Capital.com, Saxo Bank)
-- Tone: respectful, APAC-aware, direct
-
-Return JSON only:
-{
-  "subject": "Subject line",
-  "body": "Full email body"
-}`;
+// ─── GENERATE LEADS ──────────────────────────────────────────────────────────
+async function generateLeads(){
+  if(!apiKey){ toast('Enter your API key first'); return; }
+  setGenBtn(true);
+  hide('empty-state'); clear('leads-out'); hide('res-header');
+  show('loading-wrap', 'flex'); startLoad();
 
   try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', 'x-api-key': apiKey, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-20250514',
-        max_tokens: 800,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-
-    const data = await resp.json();
-    let fu = {};
-    try {
-      const text = data.content[0].text;
-      const match = text.match(/```json\n?([\s\S]*?)\n?```/);
-      fu = match ? JSON.parse(match[1]) : JSON.parse(text);
-    } catch(e) { fu = { subject: 'Follow-up', body: data.content[0].text }; }
-
-    const eid = 'fu-email-' + Math.random().toString(36).slice(2);
-    out.innerHTML = `
-      <div class="lead-card">
-        <div class="lead-head">
-          <div class="lead-av av-a" style="font-size:10px">${name.split(' ').map(w=>w[0]).join('').slice(0,3)}</div>
-          <div class="lead-info">
-            <div class="lead-company">${name}</div>
-            <div class="lead-sub">${company} · Follow-up ${fuNum} · ${dayMap[fuNum]}</div>
-          </div>
-          <span class="rbadge rb-amber" style="margin-left:auto">FU${fuNum} · ${angleMap[fuNum].split(' ').slice(0,3).join(' ')}...</span>
-        </div>
-        <div class="lead-body">
-          <div class="email-subj" style="font-size:13px">${fu.subject}</div>
-          <div class="email-body-box" id="${eid}" style="margin-top:6px">${fu.body}</div>
-          <button class="copy-email-btn" onclick="copyEmail('${eid}')">Copy email</button>
-        </div>
-      </div>`;
-
+    const data = await callAPI(sys(), buildPrompt(), 9000);
+    const text = data.content?.[0]?.text || '';
+    const leads = parseJ(text);
+    stopLoad(); hide('loading-wrap');
+    if(!leads || !leads.length) throw new Error('No leads returned — try different filters or add more context');
+    renderLeads(leads);
   } catch(err) {
-    out.innerHTML = `<div style="padding:16px;background:var(--red-bg);border:1px solid rgba(239,68,68,0.2);border-radius:var(--radius);color:#fca5a5;font-size:13px">Error: ${err.message}</div>`;
+    stopLoad(); hide('loading-wrap');
+    show('empty-state');
+    document.getElementById('leads-out').innerHTML =
+      `<div class="err-box"><strong>Error:</strong> ${esc(err.message)}<br><br>
+      <strong>Common fixes:</strong><br>
+      • Make sure your API key is correct (starts with sk-ant-)<br>
+      • Check you have credits at console.anthropic.com<br>
+      • If using a shared key — the key may have expired<br>
+      • Try again in a few seconds</div>`;
+    toast('Error — see the red box for details');
   }
+  setGenBtn(false);
 }
 
-// ── COPY ──
-function copyEmail(id) {
+function setGenBtn(loading){
+  document.getElementById('gen-btn').disabled = loading;
+  document.getElementById('btn-txt').textContent = loading ? 'Generating…' : 'Generate Leads';
+  document.getElementById('btn-spin').style.display = loading ? 'block' : 'none';
+  document.getElementById('btn-ico').style.display = loading ? 'none' : 'block';
+}
+
+// ─── RENDER LEADS ────────────────────────────────────────────────────────────
+function renderLeads(leads){
+  const contacts = leads.reduce((s,l) => s + (l.contacts?.length||0), 0);
+  const emails = leads.reduce((s,l) => s + (l.contacts||[]).reduce((cs,c) => cs + (c.tier===1?2:1), 0), 0);
+  const ab = leads.reduce((s,l) => s + (l.contacts||[]).filter(c=>c.tier===1).length, 0) * 2;
+
+  document.getElementById('res-title').textContent = `${leads.length} leads generated`;
+  document.getElementById('res-bdgs').innerHTML =
+    `<span class="bdg bdg-g">Contacts verified</span>
+     <span class="bdg bdg-a">Emails inline</span>
+     <span class="bdg bdg-b">${leads.length} leads</span>`;
+  document.getElementById('stat-row').innerHTML =
+    `<div class="stat-box"><div class="stat-n">${leads.length}</div><div class="stat-l">Companies</div></div>
+     <div class="stat-box"><div class="stat-n">${contacts}</div><div class="stat-l">Contacts</div></div>
+     <div class="stat-box"><div class="stat-n">${emails}</div><div class="stat-l">Emails drafted</div></div>
+     <div class="stat-box"><div class="stat-n">${ab}</div><div class="stat-l">A/B versions</div></div>`;
+  show('res-header');
+  document.getElementById('leads-out').innerHTML = leads.map((l,i) => leadCard(l,i)).join('');
+}
+
+function leadCard(l,i){
+  const av = AV[i % AV.length];
+  const hi = l.score >= 75;
+  const contacts = (l.contacts||[]).map(c => contactBlock(c)).join('');
+  return `<div class="lead-card">
+  <div class="lead-head">
+    <div class="lead-av ${av}">${esc((l.company||'').slice(0,3).toUpperCase())}</div>
+    <div class="lead-info">
+      <div class="lead-co">${esc(l.company)}</div>
+      <div class="lead-sub">${esc(l.industry)} · ${esc(l.market)} · ${esc(l.clients||'')}</div>
+    </div>
+    <div class="score-col">
+      <div class="${hi?'sc-h':'sc-m'}">${l.score}</div>
+      <div class="sc-bar"><div class="${hi?'sc-fh':'sc-fm'}" style="width:${l.score}%"></div></div>
+      <div class="sc-note">${esc(l.score_note||'')}</div>
+    </div>
+  </div>
+  <div class="lead-body">
+    <div><div class="slbl">Why now</div><div class="now-box">${esc(l.why_now||'')}</div></div>
+    <div class="trig-box">
+      <div class="trig-lbl">F3 · News trigger — ${esc(l.news_label||'')}</div>
+      <div class="trig-txt">${esc(l.news||'')}</div>
+    </div>
+    <div>
+      <div class="slbl">Buying signals</div>
+      <div class="sigs">
+        ${(l.hot||[]).map(s=>`<span class="sig-h">${esc(s)}</span>`).join('')}
+        ${(l.warm||[]).map(s=>`<span class="sig-w">${esc(s)}</span>`).join('')}
+      </div>
+    </div>
+    <div>
+      <div class="slbl">Pitch angle</div>
+      <div class="pitch-box">
+        <div class="pitch-row"><span class="ptag pt-p">Problem</span><span class="ptxt">${esc(l.problem||'')}</span></div>
+        <div class="pitch-row"><span class="ptag pt-r">Reframe</span><span class="ptxt">${esc(l.reframe||'')}</span></div>
+        <div class="pitch-row"><span class="ptag pt-o">Opportunity</span><span class="ptxt">${esc(l.opportunity||'')}</span></div>
+      </div>
+    </div>
+    <div>
+      <div class="slbl">Reference clients</div>
+      <div class="refs">${(l.refs||[]).map(r=>`<span class="ref-pill">${esc(r)}</span>`).join('')}</div>
+    </div>
+    <div>
+      <div class="slbl">Contacts + emails</div>
+      ${contacts}
+    </div>
+  </div>
+</div>`;
+}
+
+function contactBlock(c){
+  const tc = c.tier===1?'ct1':c.tier===2?'ct2':'ct3';
+  const tl = c.tier===1?'Tier 1 · Primary':c.tier===2?'Tier 2 · Secondary':'Tier 3 · Escalation';
+  const tb = c.tier===1?'t1b-s':c.tier===2?'t2b-s':'t3b-s';
+  const vc = (c.verified||'').includes('lookup')?'v-need':'v-ok';
+  const liHtml = c.li && c.li !== 'needs-lookup'
+    ? `<a class="clink" href="https://${c.li.replace(/^https?:\/\//,'')}" target="_blank">${esc(c.li)} ↗</a>`
+    : `<span class="clink v-need">Needs LinkedIn Sales Navigator lookup</span>`;
+
+  const idA = uid(), idB = uid();
+  let emails = `<div style="margin-bottom:10px">
+    <span class="ver-a">Version A</span>
+    <div class="esubj">${esc(c.sa||'')}</div>
+    <div class="ebody-box" id="${idA}">${esc(c.ba||'')}</div>
+    <button class="copy-btn" onclick="copyEl('${idA}')">Copy email A</button>
+  </div>`;
+  if(c.tier===1 && c.sb){
+    emails += `<div>
+      <span class="ver-b">Version B</span>
+      <div class="esubj">${esc(c.sb||'')}</div>
+      <div class="ebody-box" id="${idB}">${esc(c.bb||'')}</div>
+      <button class="copy-btn" onclick="copyEl('${idB}')">Copy email B</button>
+    </div>`;
+  }
+  return `<div class="cblock">
+  <div class="chead">
+    <div class="cav ${tc}">${esc(c.init||c.name?.slice(0,2)||'??')}</div>
+    <div style="flex:1;min-width:0">
+      <div class="cname">${esc(c.name||'')}</div>
+      <div class="ctitle">${esc(c.title||'')}</div>
+    </div>
+    <span class="ctier ${tb}">${tl}</span>
+  </div>
+  <div class="clinks">
+    ${liHtml}
+    <span class="clink ${vc}">${esc(c.verified||'Verify role')}</span>
+  </div>
+  <hr class="cdiv">
+  <div class="emailsec">${emails}</div>
+</div>`;
+}
+
+// ─── GENERATE FOLLOW-UP ──────────────────────────────────────────────────────
+const FU_DAY = {'1':'Day 4','2':'Day 9','3':'Day 15','4':'Day 22','5':'Day 30'};
+const FU_ANGLE = {
+  '1':'specific client use case — pick one of their key clients and show how audio fits that client specifically',
+  '2':'technical angle — Amazon DSP integration, AdsWizz, cookieless data signal, or audio attribution',
+  '3':'unexpected angle — Spikes Asia audio award category, AI training data gap, CTV comparison, or brand safety of audio vs MFA risk',
+  '4':'urgency / competitive intel — first-mover window closing, another network evaluating audio, rising paid social CPMs',
+  '5':'soft close — short, warm, no pressure, leave the door open, ask if there is someone else to speak to'
+};
+
+async function generateFU(){
+  if(!apiKey){ toast('Enter your API key first'); return; }
+  const name = document.getElementById('fu-name').value.trim();
+  const co   = document.getElementById('fu-co').value.trim();
+  const init = document.getElementById('fu-init').value.trim();
+  const num  = document.getElementById('fu-num').value;
+  if(!name || !co){ toast('Enter prospect name and company'); return; }
+
+  setFUBtn(true);
+  const out = document.getElementById('fu-out');
+  out.innerHTML = `<div class="loading-wrap" style="display:flex"><div class="loading-ring"></div><div><div class="loading-t">Drafting follow-up ${num}…</div><div class="loading-s">New angle — different from the initial email</div></div></div>`;
+
+  const prompt = `Write a follow-up email for Next Audio's audio advertising offering.
+
+PROSPECT: ${name} — ${co}
+FOLLOW-UP NUMBER: ${num} (${FU_DAY[num]})
+INITIAL EMAIL: ${init||'Standard Next Audio intro about programmatic audio via AdsWizz inside Amazon DSP'}
+REQUIRED ANGLE: ${FU_ANGLE[num]}
+
+STRICT RULES:
+- Completely new angle — zero repetition from the initial email
+- Max 80 words for the body
+- Framework: Hook → Reframe → CTA
+- CTA: "Would 15 minutes be worthwhile?" or soft equivalent
+- NEVER: "Hope you're well" / "Just following up" / "Touching base" / "Circling back" / "I wanted to"
+- Subject must reference the new angle specifically
+- Use relevant Next Audio clients where natural: ProColombia, Emirates, Qatar Airways, Dubai Tourism, VISA, Capital.com, Saxo Bank
+- Tone: respectful, direct, APAC-aware
+
+Respond ONLY with JSON:
+{"subject":"Subject line","body":"Full email body"}`;
+
+  try {
+    const data = await callAPI('You are the Next Audio Prospecting Engine. Output JSON only — no text before or after.', prompt, 600);
+    const text = data.content?.[0]?.text || '';
+    const fu = parseJ(text) || {subject:'Follow-up', body: text};
+    const eid = uid();
+    out.innerHTML = `<div class="fu-result">
+  <div class="fu-result-head">
+    <div class="lead-av av-a" style="width:36px;height:36px;font-size:10px">${name.split(' ').map(w=>w[0]).join('').slice(0,3)}</div>
+    <div style="flex:1;min-width:0">
+      <div style="font-family:'Syne',sans-serif;font-size:14px;font-weight:700">${esc(name)}</div>
+      <div style="font-size:12px;color:var(--text3)">${esc(co)} · Follow-up ${num} · ${FU_DAY[num]}</div>
+    </div>
+    <span class="bdg bdg-a">FU${num}</span>
+  </div>
+  <div class="fu-result-body">
+    <div class="esubj" style="font-size:13px;margin-bottom:8px">${esc(fu.subject)}</div>
+    <div class="ebody-box" id="${eid}">${esc(fu.body)}</div>
+    <button class="copy-btn" onclick="copyEl('${eid}')">Copy email</button>
+  </div>
+</div>`;
+  } catch(err){
+    out.innerHTML = `<div class="err-box"><strong>Error:</strong> ${esc(err.message)}</div>`;
+    toast('Error — check the red box');
+  }
+  setFUBtn(false);
+}
+
+function setFUBtn(loading){
+  document.getElementById('fu-gen-btn').disabled = loading;
+  document.getElementById('fu-btn-txt').textContent = loading ? 'Generating…' : 'Generate Follow-up';
+  document.getElementById('fu-spin').style.display = loading ? 'block' : 'none';
+  document.getElementById('fu-btn-ico').style.display = loading ? 'none' : 'block';
+}
+
+function prefillFU(name, co, num){
+  document.getElementById('fu-name').value = name;
+  document.getElementById('fu-co').value = co;
+  document.getElementById('fu-num').value = num;
+  goTab('followup');
+}
+
+// ─── UTILS ───────────────────────────────────────────────────────────────────
+function uid(){ return 'e' + Math.random().toString(36).slice(2,9); }
+
+function esc(s){
+  if(s == null) return '';
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function copyEl(id){
   const el = document.getElementById(id);
-  if (!el) return;
-  navigator.clipboard.writeText(el.textContent).then(() => showToast('Email copied to clipboard ✓'));
+  if(!el) return;
+  const txt = el.innerText || el.textContent;
+  if(navigator.clipboard){
+    navigator.clipboard.writeText(txt).then(()=>toast('Copied ✓')).catch(()=>fallbackCopy(txt));
+  } else { fallbackCopy(txt); }
+}
+function fallbackCopy(txt){
+  const ta = document.createElement('textarea');
+  ta.value = txt; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.appendChild(ta); ta.focus(); ta.select();
+  document.execCommand('copy'); document.body.removeChild(ta);
+  toast('Copied ✓');
 }
 
-// ── TOAST ──
-function showToast(msg) {
+function hide(id){ const e=document.getElementById(id); if(e) e.style.display='none'; }
+function show(id, d='block'){ const e=document.getElementById(id); if(e) e.style.display=d; }
+function clear(id){ const e=document.getElementById(id); if(e) e.innerHTML=''; }
+
+function toast(msg){
   const t = document.getElementById('toast');
-  document.getElementById('toast-text').textContent = msg;
+  document.getElementById('toast-msg').textContent = msg;
   t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 3000);
+  setTimeout(()=>t.classList.remove('show'), 3200);
 }
 </script>
-
 </body>
 </html>
