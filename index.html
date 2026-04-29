@@ -368,18 +368,7 @@ body::after {
 
   <div class="content">
 
-    <!-- API KEY BANNER - hidden once key is set -->
-    <div class="key-banner" id="key-banner">
-      <div style="font-size:22px;flex-shrink:0;margin-top:2px">🔑</div>
-      <div class="key-banner-body">
-        <div class="key-banner-title">Enter your Anthropic API key to activate the engine</div>
-        <div class="key-banner-sub">Stored only in your browser. Goes directly to Anthropic — no middleman.</div>
-        <div class="key-row">
-          <input class="key-input" id="key-input" type="password" placeholder="sk-ant-api03-...">
-          <button class="key-save" onclick="saveKey()">Save & Activate</button>
-        </div>
-      </div>
-    </div>
+
 
     <!-- TABS -->
     <div class="tabs">
@@ -659,28 +648,13 @@ body::after {
 // ─── CONFIG ─────────────────────────────────────────────────────────────────
 // To embed a shared company API key, replace '' with 'sk-ant-...'
 // If left empty, each user enters their own key — stored only in their browser.
-const SHARED_KEY = 'https://leadsengine.santiago-0b1.workers.dev/';
+const WORKER_URL = 'https://leadsengine.santiago-0b1.workers.dev';
 
 // ─── STATE ───────────────────────────────────────────────────────────────────
-let apiKey = SHARED_KEY || localStorage.getItem('na_key') || '';
+
 let loadInterval;
 const AV = ['av-a','av-b','av-c','av-d','av-e'];
 const TAB_TITLES = {find:'Find Leads',brief:'Daily Brief',followup:'Follow-ups',pipeline:'Pipeline'};
-
-// ─── INIT ────────────────────────────────────────────────────────────────────
-(function(){
-  if(apiKey) document.getElementById('key-banner').style.display = 'none';
-})();
-
-// ─── API KEY ────────────────────────────────────────────────────────────────
-function saveKey(){
-  const v = document.getElementById('key-input').value.trim();
-  if(!v){ toast('Paste your Anthropic API key first'); return; }
-  apiKey = v;
-  localStorage.setItem('na_key', v);
-  document.getElementById('key-banner').style.display = 'none';
-  toast('API key saved — engine activated ✓');
-}
 
 // ─── NAV ─────────────────────────────────────────────────────────────────────
 function goTab(id){
@@ -838,13 +812,10 @@ Respond with a JSON array ONLY — no text before or after.`;
 
 // ─── API CALL ────────────────────────────────────────────────────────────────
 async function callAPI(system, user, maxTok){
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+  const resp = await fetch(WORKER_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'x-api-key': apiKey,
-      'anthropic-version': '2023-06-01',
-      'anthropic-dangerous-direct-browser-access': 'true'
     },
     body: JSON.stringify({
       model: 'claude-sonnet-4-20250514',
@@ -873,7 +844,6 @@ function parseJ(text){
 
 // ─── GENERATE LEADS ──────────────────────────────────────────────────────────
 async function generateLeads(){
-  if(!apiKey){ toast('Enter your API key first'); return; }
   setGenBtn(true);
   hide('empty-state'); clear('leads-out'); hide('res-header');
   show('loading-wrap', 'flex'); startLoad();
@@ -1030,7 +1000,6 @@ const FU_ANGLE = {
 };
 
 async function generateFU(){
-  if(!apiKey){ toast('Enter your API key first'); return; }
   const name = document.getElementById('fu-name').value.trim();
   const co   = document.getElementById('fu-co').value.trim();
   const init = document.getElementById('fu-init').value.trim();
